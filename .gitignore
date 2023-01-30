@@ -1,0 +1,14 @@
+
+# demo
+.idea/
+.gitee/
+node_modules
+.cache
+.temp
+venv/
+build/
+dist/
+*.egg-info
+script/
+tests/*-config.toml
+__pycache__
