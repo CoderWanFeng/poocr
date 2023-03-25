@@ -10,5 +10,5 @@ build/
 dist/
 *.egg-info
 script/
-tests/*-config.toml
+*/*-config.toml
 __pycache__

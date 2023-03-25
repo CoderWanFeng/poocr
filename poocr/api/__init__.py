@@ -6,3 +6,5 @@
 @Date    ：2023/1/22 15:21 
 @Description     ：
 '''
+from . import ocr
+from . import ocr2excel

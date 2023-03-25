@@ -6,7 +6,8 @@ from poocr.api.ocr import *
 class TestTencent(unittest.TestCase):
 
     def test_vin_ocr(self):
-        VatInvoiceOCR(img_path=r'C:\Users\paste_2023-01-25_00-18-41.jpg')
+        r = VatInvoiceOCR(img_path=r'C:\Users\Lenovo\Desktop\temp\增值税发票-test.jpg')
+        print(r)
 
     def test_idcard_ocr(self):
         res = IDCardOCR(
