@@ -7,7 +7,9 @@
 @Description     ：
 '''
 
+# pip install poocr
 import poocr
 
 poocr.ocr2excel.VatInvoiceOCR2Excel(intput_path=r'C:\Users\Lenovo\Desktop\temp\增值税发票-test.jpg',
-                                    output_excel='./晚枫.xlsx')
+                                    output_excel='./晚枫.xlsx',
+                                    configPath='./poocr-config.toml')
