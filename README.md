@@ -44,7 +44,7 @@ poocr 是快速调用腾讯云AI平台功能的接口合集。
 ### 🍊pip 自动下载&更新
 
 ```
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple poocr -U
+pip install -i https://mirrors.aliyun.com/pypi/simple/ poocr -U
 ```
 
 

@@ -31,6 +31,13 @@ def VatInvoiceOCR2Excel(intput_path, output_excel=None, img_url=None, configPath
     for VatInvoiceInfo in simple_progress(VatInvoiceInfos):
         dict_pandas[VatInvoiceInfo['Name']] = VatInvoiceInfo['Value']
     Items = api_res_json['Items']
+    res_df = []
     for Item in Items:
         dict_pandas.update(Item)
-    pd.DataFrame(dict_pandas, index=[0]).to_excel(str(abs_output_excel))
+        res_df.append(pd.DataFrame(dict_pandas, index=[0]))
+    res_excel = res_df[0]
+    for index, line_df in enumerate(res_df):
+        if index == 0:
+            continue
+        res_excel = res_excel._append(line_df)
+    pd.DataFrame(res_excel).to_excel(str(abs_output_excel))

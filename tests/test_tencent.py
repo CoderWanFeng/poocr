@@ -1,6 +1,7 @@
 import unittest
 
 from poocr.api.ocr import *
+from poocr.api.ocr2excel import *
 
 
 class TestTencent(unittest.TestCase):
@@ -13,3 +14,8 @@ class TestTencent(unittest.TestCase):
         res = IDCardOCR(
             img_path=r'C:\Users\Lenovo\Desktop\temp\正面.jpg')
         print(res)
+
+    def test_VatInvoiceOCR2Excel(self):
+        VatInvoiceOCR2Excel(intput_path=r'C:\Users\Lenovo\Desktop\temp\v1-微信图片_20230409204718.png',
+                            output_excel=r'./VatInvoiceOCR2Excel.xlsx',
+                            configPath=r'./poocr-config.toml')
