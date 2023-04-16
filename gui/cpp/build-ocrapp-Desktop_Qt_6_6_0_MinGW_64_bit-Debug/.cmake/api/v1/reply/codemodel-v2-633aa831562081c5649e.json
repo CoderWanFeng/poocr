@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-6183a46ec3dfcdd63beb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "ocrapp",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ocrapp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ocrapp-Debug-adaf2412791e2e25e08d.json",
+					"name" : "ocrapp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ocrapp_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ocrapp_autogen-Debug-6b6df9fc03cd5f6d9ae2.json",
+					"name" : "ocrapp_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ocrapp_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ocrapp_autogen_timestamp_deps-Debug-274242812ca4220b5089.json",
+					"name" : "ocrapp_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug",
+		"source" : "D:/workplace/code/github/poocr/gui/cpp/ocrapp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

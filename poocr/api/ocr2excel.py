@@ -10,8 +10,11 @@ import json
 from pathlib import Path
 
 import pandas as pd
-from poocr.api.ocr import VatInvoiceOCR
+from pofile import get_files
 from poprogress import simple_progress
+
+import poocr
+from poocr.api.ocr import VatInvoiceOCR
 
 
 def VatInvoiceOCR2Excel(intput_path, output_excel=None, img_url=None, configPath=None):
@@ -41,3 +44,14 @@ def VatInvoiceOCR2Excel(intput_path, output_excel=None, img_url=None, configPath
             continue
         res_excel = res_excel._append(line_df)
     pd.DataFrame(res_excel).to_excel(str(abs_output_excel))
+
+
+def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR2Excel.xlsx', img_url: str = None,
+                         configPath: str = None) -> None:
+    ticket_list = []
+    ticket_files = get_files(input_path)
+    for ticket in simple_progress(ticket_files):
+        ticket_info = poocr.ocr.TrainTicketOCR(img_path=ticket, img_url=img_url, configPath=configPath)
+        ticket_list.append(ticket_info)
+    ticket_df = pd.DataFrame(ticket_list)
+    ticket_df.to_excel(output_excel, index=None)

@@ -16,6 +16,8 @@ class TestTencent(unittest.TestCase):
         print(res)
 
     def test_VatInvoiceOCR2Excel(self):
-        VatInvoiceOCR2Excel(intput_path=r'C:\Users\Lenovo\Desktop\temp\v1-微信图片_20230409204718.png',
+        VatInvoiceOCR2Excel(intput_path=r'C:\Users\Lenovo\Desktop\temp\Snipaste_2023-04-09_22-23-48.png',
                             output_excel=r'./VatInvoiceOCR2Excel.xlsx',
                             configPath=r'./poocr-config.toml')
+    def test_TrainTicketOCR2Excel(self):
+        TrainTicketOCR2Excel(input_path='', output_excel='',configPath='fdasf')

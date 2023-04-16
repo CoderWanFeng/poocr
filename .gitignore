@@ -12,3 +12,4 @@ dist/
 script/
 */*-config.toml
 __pycache__
+*/sh2exe/*
