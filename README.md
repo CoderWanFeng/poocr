@@ -52,32 +52,26 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poocr -U
 
 ## 📝功能
 
-[📘官网：https://www.python-office.com/](https://www.python-office.com/)
+- [📘官网：https://www.python-office.com/](https://www.python-office.com/)
 
-## 💻所有功能的列表👉[点我直达](https://mp.weixin.qq.com/s/WxICBZZSgkm-OrvXB82hbg)
+-  💻所有功能的列表👉[点我直达](https://www.python-office.com/video/poocr.html)
 
+
+## 常见问题
+
+1. 如何配置poocr-config.toml？
+
+第一步，你需要开通腾讯云的发票识别功能（收费功能，很便宜）：[点我直达](https://cloud.tencent.com/act/cps/redirect?redirect=10098&cps_key=ca76be5a2293ba3906d6d5407aea15ee)
+
+第二步，你需要设置一个子账户（不花钱）：[点我直达](https://cloud.tencent.com/act/cps/redirect?redirect=36394&cps_key=ca76be5a2293ba3906d6d5407aea15ee)
+
+如果以上配置，自己不懂技术，难以实现的话，可以付费找我帮你配置。我的微信，点击直达👉[CoderWanFeng](http://python4office.cn/wechat-qrcode/)，99元/次，一次就够了。我有自己的工作，都是打工人，拒绝白嫖哈，多谢理解。
 ## 🏗️添砖加瓦
 
 
 ### 📐PR的建议
 
-python-office欢迎任何人来添砖加瓦，贡献代码，建议提交的pr（pull request）符合一些规范，规范如下：
-
-参与项目建设的步骤：
-- 例如：你需要给python-office添加一个add方法。
-   1. 你的Github账户名为：demo
-   2. 于是你在./contributors新建了文件夹./demo
-   3. 新建了add.py文件，编辑你的代码
-   4. 编辑完成，提交pr到master分支（gitee或者GitHub，都可以）。可以注明你对自己功能的取名建议
-   5. 晚枫收到后，会对各位的代码进行测试后，合并后打包上传到python官方库
-
-### 📐代码规范
-
-1. 注释完备，尤其每个新增的方法应按照Google Python文档规范标明方法说明、参数说明、返回值说明等信息，必要时请添加单元测试，如果愿意，也可以加上你的大名。
-2. python-office的文档，需要进行格式化。注意：只能格式化你自己的代码
-3. 请直接pull request到`master`分支。`master`是主分支，表示已经发布pypi库的版本。**未来参与人数增多，会开辟新的分支，请留意本文档的更新。**
-4. 我们如果关闭了你的issue或pr，请不要诧异，这是我们保持问题处理整洁的一种方式，你依旧可以继续讨论，当有讨论结果时我们会重新打开。
-
+poocr欢迎任何人来添砖加瓦，贡献代码，建议提交的pr（pull request）符合一些规范，规范如下：
 
 ### 🧬贡献代码的步骤
 
