@@ -35,7 +35,7 @@ poocr 是快速调用腾讯云AI平台功能的接口合集。
 
 ``poocr``所有功能的实现，都依托于腾讯云的文字识别，如果是小白用户，可以**扫码下图，免费开通**~
 
-![](https://article-1300615378.cos.ap-nanjing.myqcloud.com/poocr%2Fapi-doc%2Fshare.jpg)
+![](https://article-1300615378.cos.ap-nanjing.myqcloud.com/potencent%2Fapi-doc%2Fshare.jpg)
 
 -------------------------------------------------------------------------------
 
