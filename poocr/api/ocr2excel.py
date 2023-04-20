@@ -44,27 +44,30 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
     for vat_img in simple_progress(vat_img_files):
         try:
             api_res = VatInvoiceOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath)
+
+            api_res_json = json.loads(str(api_res))
+            VatInvoiceInfos = api_res_json['VatInvoiceInfos']
+            dict_pandas = {}  # 存放一行数据
+            # 读返回值的第一个key
+            for VatInvoiceInfo in VatInvoiceInfos:
+                dict_pandas[VatInvoiceInfo['Name']] = VatInvoiceInfo['Value']
+            # 读返回值的第二个key
+            Items = api_res_json['Items']
+            for Item in Items:
+                dict_pandas.update(Item)
+                res_df.append(pd.DataFrame(dict_pandas, index=[0]))
         except:
             continue
-        api_res_json = json.loads(str(api_res))
-        VatInvoiceInfos = api_res_json['VatInvoiceInfos']
-        dict_pandas = {}  # 存放一行数据
-        # 读返回值的第一个key
-        for VatInvoiceInfo in VatInvoiceInfos:
-            dict_pandas[VatInvoiceInfo['Name']] = VatInvoiceInfo['Value']
-        # 读返回值的第二个key
-        Items = api_res_json['Items']
-        for Item in Items:
-            dict_pandas.update(Item)
-            res_df.append(pd.DataFrame(dict_pandas, index=[0]))
     # 整理全部识别结果
-    res_excel = res_df[0]
-    for index, line_df in enumerate(res_df):
-        if index == 0:
-            continue
-        res_excel = res_excel._append(line_df)
-    pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
-
+    if len(res_df)>0:
+        res_excel = res_df[0]
+        for index, line_df in enumerate(res_df):
+            if index == 0:
+                continue
+            res_excel = res_excel._append(line_df)
+        pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
+    else:
+        print(f'该文件夹下，没有任何符合条件的发票图片')
 
 def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR2Excel.xlsx', img_url: str = None,
                          configPath: str = None) -> None:
