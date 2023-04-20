@@ -19,5 +19,9 @@ class TestTencent(unittest.TestCase):
         VatInvoiceOCR2Excel(intput_path=r'C:\Users\Lenovo\Desktop\temp\Snipaste_2023-04-09_22-23-48.png',
                             output_excel=r'./VatInvoiceOCR2Excel.xlsx',
                             configPath=r'./poocr-config.toml')
+
     def test_TrainTicketOCR2Excel(self):
-        TrainTicketOCR2Excel(input_path='', output_excel='',configPath='fdasf')
+        TrainTicketOCR2Excel(input_path='', output_excel='', configPath='fdasf')
+
+    def test_BizLicenseOCR(self):
+        poocr.ocr.BizLicenseOCR(img_path=r'd://test//营业执照的照片.jpg')
