@@ -6,14 +6,14 @@
 @Date    ：2023/1/22 18:45
 @Description     ：文字识别功能，可以单独调用
 '''
-from poocr.lib.Const import NO_FILE_ERROR
-from poocr.lib.Config import poocrConfig
-
 from tencentcloud.common import credential
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.ocr.v20181119 import ocr_client, models
+
+from poocr.lib.Config import poocrConfig
+from poocr.lib.Const import NO_FILE_ERROR
 
 
 class OCR(poocrConfig):
@@ -23,17 +23,21 @@ class OCR(poocrConfig):
         self.TENCENTCLOUD_SECRET_KEY = None
         self.CLIENT = None
 
-    def set_config(self, configPath):
+    def set_config(self, configPath, id, key):
         """
-        加载配置信息，生成client
+        加载配置信息，生成client，获取配置信息：
         :param configPath: 可以自定义config文件的名称和位置，有默认值
         :return:
         """
-        self.TENCENT_AI_CFG = self.get_config(configPath)
-        if self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_ID'] and self.TENCENT_AI_CFG['tencent-ai'][
-            'TENCENTCLOUD_SECRET_KEY']:
-            self.TENCENTCLOUD_SECRET_ID = self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_ID']
-            self.TENCENTCLOUD_SECRET_KEY = self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_KEY']
+        if id != None and key != None:
+            self.TENCENTCLOUD_SECRET_ID = id
+            self.TENCENTCLOUD_SECRET_KEY = key
+        else:
+            self.TENCENT_AI_CFG = self.get_config(configPath)
+            if self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_ID'] and self.TENCENT_AI_CFG['tencent-ai'][
+                'TENCENTCLOUD_SECRET_KEY']:
+                self.TENCENTCLOUD_SECRET_ID = self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_ID']
+                self.TENCENTCLOUD_SECRET_KEY = self.TENCENT_AI_CFG['tencent-ai']['TENCENTCLOUD_SECRET_KEY']
         cred = credential.Credential(self.TENCENTCLOUD_SECRET_ID, self.TENCENTCLOUD_SECRET_KEY)
         httpProfile = HttpProfile()
         httpProfile.endpoint = "ocr.tencentcloudapi.com"
@@ -69,7 +73,6 @@ class OCR(poocrConfig):
 
         except TencentCloudSDKException as err:
             print(err)
-
 
     # def VatInvoiceOCR(self, ImageBase64, ImageUrl):
     #     """

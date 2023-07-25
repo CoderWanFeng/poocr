@@ -19,7 +19,7 @@
   	<a href="https://mp.weixin.qq.com/s/yaSmFKO3RrBpyanW3nvRAQ">
 	<img src="https://img.shields.io/badge/QQ-163434413-orange"/>
   </a>
-    	<a href="https://mp.weixin.qq.com/s/wx-JkgOUoJhb-7ZESxl93w">
+    	<a href="https://mp.weixin.qq.com/s/NN2pX2bQPpczOeGF4ARNtw">
 	<img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1-%E4%BA%A4%E6%B5%81%E7%BE%A4-brightgreen"/>
   </a>
 </p>
@@ -52,7 +52,7 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poocr -U
 
 ## 📝功能
 
-- [📘官网：https://www.python-office.com/](https://www.python-office.com/)
+- [📘Python自动化办公的官网：https://www.python-office.com/](https://www.python-office.com/)
 
 -  💻所有功能的列表👉[点我直达](https://www.python-office.com/video/poocr.html)
 
@@ -95,4 +95,8 @@ poocr欢迎任何人来添砖加瓦，贡献代码，建议提交的pr（pull re
 ## 📌联系作者
 
 
-![CoderWanFeng](https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office-qr.jpg)
+<p align="center" id='开源交流群-banner'>
+<a target="_blank" href='https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office.jpg'>
+<img src="https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office-qr.jpg" width="100%"/>
+</a> 
+</p>
