@@ -102,3 +102,26 @@ def BankCardOCR2Excel(input_path, output_path=None, output_excel='BankCardOCR2Ex
     if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
         abs_output_excel = Path(output_path).absolute() / output_excel
     df.to_excel(str(abs_output_excel), index=False)
+
+def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePlateOCR2Excel.xlsx', img_url=None,
+                      configPath=None, id=None, key=None):
+    """
+    识别银行卡，自动保存为Excel文件
+    :param input_path: 必填，银行卡图片的位置
+    :param output_path: 选填，输出Excel的位置
+    :param output_excel: 选填，输出Excel的名称
+    :param img_url: 选填，可以是网络图片
+    :param configPath: 已废弃
+    :param id: 你的腾讯账号的密钥，获取方式：https://curl.qcloud.com/fuOGcm2R
+    :param key: 你的腾讯账号的密钥，获取方式：https://curl.qcloud.com/fuOGcm2R
+    :return:
+    """
+    test_json = poocr.ocr.LicensePlateOCR(img_path=input_path, img_url=img_url, configPath=configPath, id=id,
+                                      key=key)
+    df = pd.DataFrame(json.loads(str(test_json)), index=[0])
+    if output_path == None:
+        output_path = './'
+    mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
+    if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
+        abs_output_excel = Path(output_path).absolute() / output_excel
+    df.to_excel(str(abs_output_excel), index=False)
