@@ -1,10 +1,11 @@
 import unittest
 
-from poocr.api.ocr import *
 from poocr.api.ocr2excel import *
 
 
 class TestTencent(unittest.TestCase):
+
+
 
     def test_vin_ocr(self):
         r = VatInvoiceOCR(img_path=r'C:\Users\Lenovo\Desktop\temp\增值税发票-test.jpg')
@@ -25,3 +26,6 @@ class TestTencent(unittest.TestCase):
 
     def test_BizLicenseOCR(self):
         poocr.ocr.BizLicenseOCR(img_path=r'd://test//营业执照的照片.jpg')
+
+    def test_IDCardOCR2Excel(self):
+        poocr.ocr2excel.IDCardOCR2Excel(input_path=r'./test_files/', id=self.SecretId, key=self.SecretKey)

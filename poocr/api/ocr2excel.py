@@ -14,7 +14,7 @@ from pofile import get_files, mkdir
 from poprogress import simple_progress
 
 import poocr
-from poocr.api.ocr import VatInvoiceOCR
+from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
 
 
 def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
@@ -69,6 +69,51 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
         print(f'该文件夹下，没有任何符合条件的发票图片')
 
 
+def IDCardOCR2Excel(input_path, output_path=None, output_excel='IDCardOCR2Excel.xlsx', img_url=None,
+                    configPath=None, id=None, key=None):
+    """
+    批量识别身份证，并保存在Excel中
+    :param input_path: 身份证存放位置，可以填单个文件，也可以填一个目录
+    :param output_path:
+    :param output_excel:
+    :param img_url:
+    :param configPath:
+    :return:
+    """
+    id_img_files = get_files(input_path)
+    if id_img_files == None:
+        raise BaseException(f'{input_path}这个路径下，没有存放任何身份证，请确认后重新运行')
+    abs_intput_path = Path(input_path).absolute()
+    if output_path == None:
+        output_path = './'
+    mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
+    if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
+        abs_output_excel = Path(output_path).absolute() / output_excel
+    else:  # 指定了，但不是xlsx或者xls结束
+        raise BaseException(
+            f'输出结果名：output_excel参数，必须以xls或者xlsx结尾，您的输入:{output_excel}有误，请修改后重新运行')
+    res_df = []  # 装全部识别的结果
+    for id_img in simple_progress(id_img_files):
+        try:
+            api_res = IDCardOCR(img_path=str(id_img), img_url=img_url, configPath=configPath, id=id, key=key)
+            api_res_json = json.loads(str(api_res))
+            del api_res_json['ReflectDetailInfos']
+
+            res_df.append(pd.DataFrame(api_res_json, index=[0]))
+        except:
+            continue
+    # 整理全部识别结果
+    if len(res_df) > 0:
+        res_excel = res_df[0]
+        for index, line_df in enumerate(res_df):
+            if index == 0:
+                continue
+            res_excel = res_excel._append(line_df)
+        pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
+    else:
+        print(f'该文件夹下，没有任何符合条件的身份证图片')
+
+
 def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR2Excel.xlsx', img_url: str = None,
                          configPath: str = None) -> None:
     ticket_list = []
@@ -103,8 +148,9 @@ def BankCardOCR2Excel(input_path, output_path=None, output_excel='BankCardOCR2Ex
         abs_output_excel = Path(output_path).absolute() / output_excel
     df.to_excel(str(abs_output_excel), index=False)
 
+
 def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePlateOCR2Excel.xlsx', img_url=None,
-                      configPath=None, id=None, key=None):
+                          configPath=None, id=None, key=None):
     """
     识别银行卡，自动保存为Excel文件
     :param input_path: 必填，银行卡图片的位置
@@ -117,7 +163,7 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
     :return:
     """
     test_json = poocr.ocr.LicensePlateOCR(img_path=input_path, img_url=img_url, configPath=configPath, id=id,
-                                      key=key)
+                                          key=key)
     df = pd.DataFrame(json.loads(str(test_json)), index=[0])
     if output_path == None:
         output_path = './'

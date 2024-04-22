@@ -39,11 +39,11 @@
 ## 📚简介
 
 
-poocr 是快速调用腾讯云AI平台功能的接口合集。
+poocr 是一个文字识别的第三方库。
 
-``poocr``所有功能的实现，都依托于腾讯云的文字识别，如果是小白用户，可以**扫码下图，免费开通**~
 
-![](https://article-1300615378.cos.ap-nanjing.myqcloud.com/potencent%2Fapi-doc%2Fshare.jpg)
+-  💻所有功能的讲解👉[5讲OCR批量识别后自动保存为Excel，给小白的Python入门课又增加了！](https://www.bilibili.com/video/BV13J4m1s7L7/)
+
 
 -------------------------------------------------------------------------------
 
@@ -58,44 +58,26 @@ pip install -i https://mirrors.aliyun.com/pypi/simple/ poocr -U
 
 -------------------------------------------------------------------------------
 
-## 📝功能
-
-- [📘Python自动化办公的官网：https://www.python-office.com/](https://www.python-office.com/)
-
--  💻所有功能的列表👉[点我直达](https://www.python-office.com/video/poocr.html)
+## 📝官网
 
 
-## 常见问题
 
-1. 如何配置poocr-config.toml？
 
-第一步，你需要开通腾讯云的发票识别功能（收费功能，很便宜）：[点我直达](https://cloud.tencent.com/act/cps/redirect?redirect=10098&cps_key=ca76be5a2293ba3906d6d5407aea15ee)
+- [📘Python自动化办公的官网👉https://www.python-office.com/](https://www.python-office.com/)
 
-第二步，你需要设置一个子账户（不花钱）：[点我直达](https://cloud.tencent.com/act/cps/redirect?redirect=36394&cps_key=ca76be5a2293ba3906d6d5407aea15ee)
 
-如果以上配置，自己不懂技术，难以实现的话，可以付费找我帮你配置。我的微信，点击直达👉[CoderWanFeng](http://python4office.cn/wechat-qrcode/)，99元/次，一次就够了。我有自己的工作，都是打工人，拒绝白嫖哈，多谢理解。
 ## 🏗️添砖加瓦
 
 
 ### 📐PR的建议
 
-poocr欢迎任何人来添砖加瓦，贡献代码，建议提交的pr（pull request）符合一些规范，规范如下：
-
-### 🧬贡献代码的步骤
-
-1. 在Gitee或者Github上fork项目到自己的repo
-2. 把fork过去的项目也就是你的项目clone到你的本地
-3. 修改代码
-4. commit后push到自己的库
-5. 登录Gitee或Github在你首页可以看到一个 pull request 按钮，点击它，填写一些说明信息，然后提交到master分支即可。
-6. 等待维护者合并
-
+poocr欢迎任何人来添砖加瓦，贡献代码。
 
 ### 🐞提供bug反馈或建议
 
-提交问题反馈时，请务必填写和python-office代码本身有关的问题，不进行有关python学习，甚至是个人练习的知识答疑和讨论。
+提交问题反馈时，请务必填写和poocr代码本身有关的问题，不进行有关python学习，甚至是个人练习的知识答疑和讨论。
 
-- [Github issue](https://github.com/CoderWanFeng/pobaidu/issues)
+- [Github issue](https://github.com/CoderWanFeng/poocr/issues)
 
 -------------------------------------------------------------------------------
 
