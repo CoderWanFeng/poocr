@@ -44,6 +44,11 @@ poocr 是一个文字识别的第三方库。
 
 -  💻所有功能的讲解👉[5讲OCR批量识别后自动保存为Excel，给小白的Python入门课又增加了！](https://www.bilibili.com/video/BV13J4m1s7L7/)
 
+<p align="center" id='5讲OCR-banner'>
+    <a target="_blank" href='https://www.python-office.com/course-002/5-poocr/5-poocr.html'>
+    <img src="https://course-1300615378.cos.ap-guangzhou.myqcloud.com/poocr%2F%E5%B0%81%E9%9D%A2-%E6%A8%AA.jpg" width="100%"/>
+    </a>   
+</p>
 
 -------------------------------------------------------------------------------
 
