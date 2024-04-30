@@ -6,8 +6,8 @@ from poocr.api.ocr2excel import *
 class TestTencent(unittest.TestCase):
 
     def setUp(self):
-        self.SecretId = ''
-        self.SecretKey = ''
+        # self.SecretId = ''
+        # self.SecretKey = ''
 
     def test_vin_ocr(self):
         r = VatInvoiceOCR(img_path=r'C:\Users\Lenovo\Desktop\temp\增值税发票-test.jpg')
