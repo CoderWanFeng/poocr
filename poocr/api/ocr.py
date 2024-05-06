@@ -9,6 +9,7 @@
 
 import sys
 
+from poocr.core.BaiduOCR import BaiduOCR
 from poocr.core.OCR import OCR
 from poocr.lib.CommonUtils import img2base64
 
@@ -648,6 +649,10 @@ def WaybillOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
                   configPath=configPath,
                   id=id, key=key)
 
+
+def social_security_card(img_path, id, key):
+    baidu_ocr = BaiduOCR(id, key)
+    return baidu_ocr.social_security_card(img_path)
 # def VatInvoiceOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
 #     """
 #     增值税发票的识别
