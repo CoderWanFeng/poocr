@@ -5,6 +5,9 @@
 @个人网站 ：www.python-office.com
 @Date    ：2023/3/25 18:53
 @Description     ：
+- id和key：
+    - 开通和使用👉[免费教程](https://curl.qcloud.com/fuOGcm2R)
+
 '''
 import json
 from pathlib import Path
@@ -18,7 +21,7 @@ from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
 
 
 def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
-                        configPath=None, id=None, key=None):
+                        configPath=None, id=None, key=None, file_name=False, trans=False):
     """
     批量识别发票，并保存在Excel中
     :param input_path: 发票存放位置，可以填单个文件，也可以填一个目录
@@ -49,13 +52,31 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
             dict_pandas = {}  # 存放一行数据
             # 读返回值的第一个key
             for VatInvoiceInfo in VatInvoiceInfos:
+                if file_name:
+                    dict_pandas['文件名'] = Path(vat_img).name  # 增加文件名作为一列
+
                 dict_pandas[VatInvoiceInfo['Name']] = VatInvoiceInfo['Value']
             # 读返回值的第二个key
+            key_trans_history = {}
+            new_item_json = []
             Items = api_res_json['Items']
-            for Item in Items:
+            if trans:
+                import wftools
+
+                for i in Items:
+                    new_i = {}
+                    for k, v in i.items():
+                        if key_trans_history.get(k, None) == None:
+                            key_trans_history[k] = wftools.transtools(k, to_lang='zh', from_lang='en')
+                        new_i[key_trans_history.get(k)] = v
+                    new_item_json.append(new_i)
+            else:
+                new_item_json = Items
+            for Item in new_item_json:
                 dict_pandas.update(Item)
                 res_df.append(pd.DataFrame(dict_pandas, index=[0]))
-        except:
+        except Exception as e:
+            print(e)
             continue
     # 整理全部识别结果
     if len(res_df) > 0:
