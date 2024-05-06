@@ -13,7 +13,7 @@ SecretId = 'AKIDITXZTE65a7Ujy77EScqy9D7nESSEmKoC'
 SecretKey = 'V4eI2f6A8vYBiECEFU2NUP8uXxEHOafh'
 
 # res = poocr.ocr.VatInvoiceOCR(img_path=r'./img.png', id=SecretId, key=SecretKey)
-res = poocr.ocr2excel.VatInvoiceOCR2Excel(input_path=r'./img.png', id=SecretId, key=SecretKey,file_name=True,trans=True)
+poocr.ocr2excel.VatInvoiceOCR2Excel(input_path=r'./img.png', id=SecretId, key=SecretKey, file_name=True)
 # print(res)
 # poocr.ocr2excel.VatInvoiceOCR2Excel(img_path=r'')
 
