@@ -11,11 +11,12 @@ import poocr
 
 SecretId = 'AKIDIn8sQlwvnSuDJCsKgstivztc7ScfYHMJ'
 SecretKey = 'abc'
-img_path=r'./img.png'
-res = poocr.ocr.VatInvoiceOCR(img_path=img_path, id=SecretId, key=SecretKey)
-# pdf_path = r'C:\Users\Lenovo\Desktop\temp\046002300111_58278670_20240428111616.pdf'
-poocr.ocr2excel.VatInvoiceOCR2Excel(input_path=img_path, id=SecretId, key=SecretKey, file_name=True)
-print(res)
+
+# res = poocr.ocr.VatInvoiceOCR(img_path=r'./img.png', id=SecretId, key=SecretKey)
+pdf_path = r'C:\Users\Lenovo\Desktop\temp\046002300111_58278670_20240428111616.pdf'
+
+poocr.ocr2excel.VatInvoiceOCR2Excel(input_path=pdf_path, id=SecretId, key=SecretKey, file_name=True)
+# print(res)
 # poocr.ocr2excel.VatInvoiceOCR2Excel(img_path=r'')
 
 """

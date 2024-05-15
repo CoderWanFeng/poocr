@@ -21,7 +21,7 @@ from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
 
 
 def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
-                        configPath=None, id=None, key=None, file_name=False, trans=False):
+                        configPath=None, id=None, key=None, file_name=False, trans=False,pdf_path=None):
     """
     批量识别发票，并保存在Excel中
     :param input_path: 发票存放位置，可以填单个文件，也可以填一个目录
@@ -46,16 +46,25 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
     res_df = []  # 装全部识别的结果
     for vat_img in simple_progress(vat_img_files):
         try:
-            api_res = VatInvoiceOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
+            if pdf_path:
+                api_res = VatInvoiceOCR(pdf_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
+            else:
+                api_res = VatInvoiceOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
             api_res_json = json.loads(str(api_res))
             VatInvoiceInfos = api_res_json['VatInvoiceInfos']
             dict_pandas = {}  # 存放一行数据
             # 读返回值的第一个key
+            beizhu_value = ''
             for VatInvoiceInfo in VatInvoiceInfos:
                 if file_name:
                     dict_pandas['文件名'] = Path(vat_img).name  # 增加文件名作为一列
+                row_name = VatInvoiceInfo['Name']
+                if row_name == "备注":
+                    beizhu_value += VatInvoiceInfo['Value']
+                else:
+                    dict_pandas[row_name] = VatInvoiceInfo['Value']
+            dict_pandas['备注'] = beizhu_value  # TODO：备注内容跟的合并方式
 
-                dict_pandas[VatInvoiceInfo['Name']] = VatInvoiceInfo['Value']
             # 读返回值的第二个key
             key_trans_history = {}
             new_item_json = []

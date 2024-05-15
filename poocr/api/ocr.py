@@ -6,7 +6,7 @@
 @Date    ：2023/1/22 15:23
 @Description     ：
 '''
-
+import base64
 import sys
 
 from poocr.core.BaiduOCR import BaiduOCR
@@ -20,13 +20,18 @@ def get_ocr(configPath, id, key):
     return ocr
 
 
-def do_api(OCR_NAME, img_path, img_url, configPath, id, key):
+def do_api(OCR_NAME, img_path, img_url, configPath, id, key,pdf_path=None):
     """
     通过类的方法名，直接调用方法
     :return:
     """
     ocr = get_ocr(configPath, id, key)
-    if img_url:
+    if pdf_path:
+        with open(pdf_path, 'rb') as file:
+            pdf_data = file.read()
+            base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
+            ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url,IsPdf=True)
+    elif img_url:
         ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=img_path, ImageUrl=img_url)
     else:
         ImageBase64 = img2base64(img_path)
@@ -554,12 +559,12 @@ def TrainTicketOCR(img_path=None, img_url=None, configPath=None, id=None, key=No
                   id=id, key=key)
 
 
-def VatInvoiceOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
+def VatInvoiceOCR(img_path=None, img_url=None, configPath=None, id=None, key=None, pdf_path=None):
     return do_api(OCR_NAME=str(sys._getframe().f_code.co_name),
                   img_path=img_path,
                   img_url=img_url,
                   configPath=configPath,
-                  id=id, key=key)
+                  id=id, key=key, pdf_path=pdf_path)
 
 
 def VatInvoiceVerify(img_path=None, img_url=None, configPath=None, id=None, key=None):
