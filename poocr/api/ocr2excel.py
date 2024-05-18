@@ -21,7 +21,7 @@ from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
 
 
 def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
-                        configPath=None, id=None, key=None, file_name=False, trans=False,pdf_path=None):
+                        configPath=None, id=None, key=None, file_name=False, trans=False):
     """
     批量识别发票，并保存在Excel中
     :param input_path: 发票存放位置，可以填单个文件，也可以填一个目录
@@ -46,7 +46,8 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
     res_df = []  # 装全部识别的结果
     for vat_img in simple_progress(vat_img_files):
         try:
-            if pdf_path:
+
+            if Path(vat_img).suffix=='.pdf':
                 api_res = VatInvoiceOCR(pdf_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
             else:
                 api_res = VatInvoiceOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
