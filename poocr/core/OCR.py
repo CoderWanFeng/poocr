@@ -61,14 +61,15 @@ class OCR(poocrConfig):
             return NO_FILE_ERROR
         return params
 
-    def DoOCR(self, OCR_NAME, ImageBase64, ImageUrl,IsPdf=False):
+    def DoOCR(self, OCR_NAME, ImageBase64, ImageUrl, IsPdf=False):
 
         try:
             ocr_req_func = getattr(models, f'{OCR_NAME}Request', None)
             req = ocr_req_func()
             req.from_json_string(self.get_params(ImageBase64, ImageUrl))
             ocr_func = getattr(self.client, f'{OCR_NAME}', None)
-            req.IsPdf=IsPdf
+            if OCR_NAME != 'IDCardOCR':
+                req.IsPdf = IsPdf
             resp = ocr_func(req)
             return resp
 

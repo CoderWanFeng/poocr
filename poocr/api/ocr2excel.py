@@ -20,23 +20,29 @@ import poocr
 from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
 
 
-def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
+def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
                         configPath=None, id=None, key=None, file_name=False, trans=False):
     """
-    批量识别发票，并保存在Excel中
-    :param input_path: 发票存放位置，可以填单个文件，也可以填一个目录
-    :param output_path:
-    :param output_excel:
-    :param img_url:
-    :param configPath:
-    :return:
+    将OCR识别的增值税发票数据转换为Excel表格。
+
+    该函数主要处理从图像文件中提取的增值税发票数据，通过OCR技术识别后，将数据整理并输出到Excel表格中。
+    这对于财务人员自动整理和核对发票信息非常有用。
+
+    :param input_path: 输入文件路径，可以是单个文件或文件夹
+    :param output_path: 输出Excel文件的路径，默认为None，表示使用函数默认文件名并保存在当前目录
+    :param output_excel: 输出Excel文件的名称，默认为'VatInvoiceOCR2Excel.xlsx'
+    :param img_url: 图像文件的URL地址，用于远程处理
+    :param configPath: 配置文件路径，用于指定OCR引擎的配置
+    :param id: OCR引擎的用户ID
+    :param key: OCR引擎的用户密钥
+    :param file_name: 是否在Excel中包含文件名作为一行数据，默认为False
+    :param trans: 是否进行数据转换，默认为False。如果设置为True，将尝试将识别到的文本数据转换为相应的数字或日期格式
     """
+
     vat_img_files = get_files(input_path)
     if vat_img_files == None:
-        raise BaseException(f'{input_path}这个路径下，没有存放任何发票，请确认后重新运行')
+        raise BaseException(f'{input_path}这个文件目录下，没有存放任何发票，请确认后重新运行')
     abs_intput_path = Path(input_path).absolute()
-    if output_path == None:
-        output_path = './'
     mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
     if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
         abs_output_excel = Path(output_path).absolute() / output_excel
@@ -97,7 +103,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=None, output_excel='VatInvoiceOC
             res_excel = res_excel._append(line_df)
         pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
     else:
-        print(f'该文件夹下，没有任何符合条件的发票图片')
+        print(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
 
 
 def IDCardOCR2Excel(input_path, output_path=None, output_excel='IDCardOCR2Excel.xlsx', img_url=None,
