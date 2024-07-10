@@ -18,6 +18,7 @@ from poprogress import simple_progress
 
 import poocr
 from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
+from poocr.core import HuaweiOCR
 
 
 def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
@@ -53,7 +54,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
     for vat_img in simple_progress(vat_img_files):
         try:
 
-            if Path(vat_img).suffix=='.pdf':
+            if Path(vat_img).suffix == '.pdf':
                 api_res = VatInvoiceOCR(pdf_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
             else:
                 api_res = VatInvoiceOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
@@ -208,3 +209,7 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
     if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
         abs_output_excel = Path(output_path).absolute() / output_excel
     df.to_excel(str(abs_output_excel), index=False)
+
+
+def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    HuaweiOCR.household2excel(ak, sk, img_path, output_excel)
