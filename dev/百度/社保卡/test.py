@@ -52,7 +52,7 @@ def social_security_card(img_path, ):
         # print(response.json())
         return response.json()
     else:
-        print('no response,help:http://t.cn/A65MiFvH')
+        print('no response,help:http://www.python4office.cn/wechat-group/')
 
 
 if __name__ == '__main__':

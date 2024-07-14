@@ -52,5 +52,5 @@ class BaiduOCR():
             # print(response.json())
             return response.json()
         else:
-            print('no response,help:http://t.cn/A65MiFvH')
+            print('no response,help:http://www.python4office.cn/wechat-group/')
             return None

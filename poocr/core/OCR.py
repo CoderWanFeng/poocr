@@ -68,7 +68,7 @@ class OCR(poocrConfig):
             req = ocr_req_func()
             req.from_json_string(self.get_params(ImageBase64, ImageUrl))
             ocr_func = getattr(self.client, f'{OCR_NAME}', None)
-            if OCR_NAME != 'IDCardOCR':
+            if OCR_NAME == 'VatInvoiceOCR':
                 req.IsPdf = IsPdf
             resp = ocr_func(req)
             return resp
