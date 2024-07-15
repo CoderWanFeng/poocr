@@ -13,11 +13,12 @@ import json
 from pathlib import Path
 
 import pandas as pd
+from loguru import logger
 from pofile import get_files, mkdir
 from poprogress import simple_progress
 
 import poocr
-from poocr.api.ocr import VatInvoiceOCR, IDCardOCR
+from poocr.api.ocr import VatInvoiceOCR, IDCardOCR, BizLicenseOCR
 from poocr.core import HuaweiOCR
 
 
@@ -93,7 +94,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
                 dict_pandas.update(Item)
                 res_df.append(pd.DataFrame(dict_pandas, index=[0]))
         except Exception as e:
-            print(e)
+            logger.error(e)
             continue
     # 整理全部识别结果
     if len(res_df) > 0:
@@ -104,7 +105,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
             res_excel = res_excel._append(line_df)
         pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
     else:
-        print(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
+        logger.warning(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
 
 
 def IDCardOCR2Excel(input_path, output_path=None, output_excel='IDCardOCR2Excel.xlsx', img_url=None,
@@ -213,3 +214,53 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
 
 def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
     HuaweiOCR.household2excel(ak, sk, img_path, output_excel)
+
+
+def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseOCR2Excel.xlsx', img_url=None,
+                        configPath=None, id=None, key=None, file_name=False, trans=False):
+    """
+    将营业执照OCR识别结果整理并保存到Excel中。
+
+    :param input_path: 图片输入路径，包含营业执照图片。
+    :param output_path: 输出路径，默认为当前目录。
+    :param output_excel: 输出的Excel文件名，默认为'BizLicenseOCR2Excel.xlsx'。
+    :param img_url: 图片URL，如果提供，将通过URL进行识别。
+    :param configPath: 配置文件路径，用于指定OCR识别的配置。
+    :param id: API的用户ID。
+    :param key: API的密钥。
+    :param file_name: 是否在结果中包含文件名，默认为False。
+    :param trans: 是否进行翻译，默认为False。
+    :raises BaseException: 当输入目录为空或输出文件名格式不正确时抛出异常。
+    """
+    # 获取输入路径下的所有文件
+    vat_img_files = get_files(input_path)
+    # 如果文件列表为空，抛出异常
+    if vat_img_files == None:
+        raise BaseException(f'{input_path}这个文件目录下，没有存放任何营业执照，请确认后重新运行')
+    # 获取输入路径的绝对路径
+    abs_intput_path = Path(input_path).absolute()
+    # 创建输出路径
+    mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
+    # 检查输出文件名是否以.xlsx或.xls结尾，如果不是，抛出异常
+    if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
+        abs_output_excel = Path(output_path).absolute() / output_excel
+    else:  # 指定了，但不是xlsx或者xls结束
+        raise BaseException(
+            f'输出结果名：output_excel参数，必须以xls或者xlsx结尾，您的输入:{output_excel}有误，请修改后重新运行')
+    # 初始化结果数据框
+    res_df = []  # 装全部识别的结果
+    # 对每个营业执照图片进行识别
+    for vat_img in simple_progress(vat_img_files):
+        try:
+            # 调用OCR API进行识别
+            api_res = BizLicenseOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
+            # 将识别结果转换为JSON格式并添加到结果数据框
+            api_res_json = json.loads(str(api_res))
+            res_df.append(api_res_json)
+        except Exception as e:
+            # 打印识别失败的信息
+            print(f'{vat_img}识别失败，原因：{e}')
+    # 将所有识别结果合并成一个数据框
+    biz_def = pd.DataFrame(res_df)
+    # 将结果数据框保存到Excel文件
+    biz_def.to_excel(str(abs_output_excel), index=None)
