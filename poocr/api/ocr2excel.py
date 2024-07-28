@@ -264,3 +264,7 @@ def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseO
     biz_def = pd.DataFrame(res_df)
     # 将结果数据框保存到Excel文件
     biz_def.to_excel(str(abs_output_excel), index=None)
+
+
+def household2excel2(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    HuaweiOCR.household2excel2(ak, sk, img_path, output_excel)

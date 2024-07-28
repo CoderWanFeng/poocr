@@ -1,9 +1,0 @@
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/ocrapp.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/install.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/ocrapp_autogen_timestamp_deps.dir
-D:/workplace/code/github/poocr/gui/cpp/build-ocrapp-Desktop_Qt_6_6_0_MinGW_64_bit-Debug/CMakeFiles/ocrapp_autogen.dir
