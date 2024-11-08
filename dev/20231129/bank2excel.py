@@ -9,16 +9,16 @@
 
 import os
 
+from loguru import logger
+
 import poocr
 
 SecretId = os.getenv("SecretId")
 SecretKey = os.getenv("SecretKey")
-# SecretKey = os.getenv("TEMP")
-print(SecretId, SecretKey)
 
 # 读取所有环境变量
 # all_env_vars = os.environ
-# print(all_env_vars)
+# logger.info(all_env_vars)
 # test_json = poocr.ocr.BankCardOCR(img_path=r'./files/img.png', img_url=None, configPath=None, id=SecretId,
 #                                   key=SecretKey)
 #
@@ -28,5 +28,3 @@ print(SecretId, SecretKey)
 # df.to_excel('data.xlsx', index=False)
 
 poocr.ocr2excel.BankCardOCR2Excel(input_path=r'./files/img.png', id=SecretId, key=SecretKey)
-
-

@@ -8,6 +8,8 @@
 '''
 import base64
 
+from loguru import logger
+
 
 def get_error_info(error_info):
     """
@@ -31,4 +33,4 @@ def img2base64(imgPath):
 
 if __name__ == '__main__':
     res = img2base64(imgPath=r'C:\Us-01-25_00-18-41.jpg')
-    print(res)
+    logger.info(res)

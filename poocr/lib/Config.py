@@ -7,6 +7,8 @@
 @Description     ：加载配置信息，core中类的父类
 '''
 import toml
+from loguru import logger
+
 from poocr.lib.Const import DEFAULT_CONFIG_PATH_NAME, DEFAULT_CONFIG_NAME, TUTORIA_VIDEO
 
 
@@ -25,7 +27,7 @@ class poocrConfig():
                 self.config_info = toml.load(DEFAULT_CONFIG_PATH_NAME)
             else:
                 self.config_info = toml.load(configPath)
-            print(f'配置文件【{DEFAULT_CONFIG_NAME}】读取成功')
+            logger.info(f'配置文件【{DEFAULT_CONFIG_NAME}】读取成功')
             return self.config_info
         except:
-            print(f'配置文件【{DEFAULT_CONFIG_NAME}】读取失败，请查看视频，进行配置：{TUTORIA_VIDEO}')
+            logger.info(f'配置文件【{DEFAULT_CONFIG_NAME}】读取失败，请查看视频，进行配置：{TUTORIA_VIDEO}')

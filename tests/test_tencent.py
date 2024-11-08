@@ -35,3 +35,14 @@ class TestTencent(unittest.TestCase):
 
     def test_BizLicenseOCR2Excel(self):
         poocr.ocr2excel.BizLicenseOCR2Excel(input_path=r'./test_files/biz_img/', id=self.SecretId, key=self.SecretKey)
+
+    def test_RecognizeMedicalInvoiceOCR(self):
+        res = poocr.ocr.RecognizeMedicalInvoiceOCR(
+            img_path=r'./test_files/医疗发票/958b60388f12ce3889aa4696470483c.jpg', id=self.SecretId,
+            key=self.SecretKey)
+        print(res)
+    def test_InsuranceBillOCR(self):
+        res = poocr.ocr.InsuranceBillOCR(
+            img_path=r'./test_files/医疗发票/958b60388f12ce3889aa4696470483c.jpg', id=self.SecretId,
+            key=self.SecretKey)
+        print(res)

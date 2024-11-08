@@ -150,7 +150,7 @@ def IDCardOCR2Excel(input_path, output_path=None, output_excel='IDCardOCR2Excel.
             res_excel = res_excel._append(line_df)
         pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
     else:
-        print(f'该文件夹下，没有任何符合条件的身份证图片')
+        logger.info(f'该文件夹下，没有任何符合条件的身份证图片')
 
 
 def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR2Excel.xlsx', img_url: str = None,
@@ -213,7 +213,42 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
 
 
 def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    """
+    将户口图片转换为Excel格式。
+
+    本函数通过调用华为云的OCR服务，将户口图片中的信息识别并转换为Excel格式。
+    使用华为云账号的访问密钥（ak）和安全密钥（sk）进行身份验证，
+    指定图片文件的路径（img_path），并可选地指定输出的Excel文件名（output_excel）。
+
+    参数:
+    ak (str): 华为云账号的访问密钥。
+    sk (str): 华为云账号的安全密钥。
+    img_path (str): 户口图片文件的路径。
+    output_excel (str, 可选): 输出的Excel文件名。默认为'household2excel.xlsx'。
+
+    返回:
+    无直接返回值，结果为指定路径的Excel文件。
+    """
     HuaweiOCR.household2excel(ak, sk, img_path, output_excel)
+
+
+def household2excel2(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    """
+    将户口图像文件转换为Excel格式。
+
+    本函数通过调用华为OCR服务，将户口图像文件中的信息识别并提取出来，然后将这些信息保存到Excel文件中。
+    使用华为云的AK和SK进行身份验证，指定图像文件路径进行识别，可选地指定输出的Excel文件名。
+
+    参数:
+    - ak: 华为云的Access Key，用于身份验证。
+    - sk: 华为云的Secret Key，用于身份验证。
+    - img_path: 户口图像文件的路径，用于识别。
+    - output_excel: 输出的Excel文件名，默认为'household2excel.xlsx'。
+
+    返回:
+    无返回值，直接将识别结果保存在Excel文件中。
+    """
+    HuaweiOCR.household2excel2(ak, sk, img_path, output_excel)
 
 
 def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseOCR2Excel.xlsx', img_url=None,
@@ -259,12 +294,8 @@ def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseO
             res_df.append(api_res_json)
         except Exception as e:
             # 打印识别失败的信息
-            print(f'{vat_img}识别失败，原因：{e}')
+            logger.info(f'{vat_img}识别失败，原因：{e}')
     # 将所有识别结果合并成一个数据框
     biz_def = pd.DataFrame(res_df)
     # 将结果数据框保存到Excel文件
     biz_def.to_excel(str(abs_output_excel), index=None)
-
-
-def household2excel2(ak, sk, img_path, output_excel='household2excel.xlsx'):
-    HuaweiOCR.household2excel2(ak, sk, img_path, output_excel)

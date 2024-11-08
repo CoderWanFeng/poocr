@@ -6,6 +6,7 @@
 @Date    ：2023/1/22 18:45
 @Description     ：文字识别功能，可以单独调用
 '''
+from loguru import logger
 from tencentcloud.common import credential
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
@@ -74,24 +75,24 @@ class OCR(poocrConfig):
             return resp
 
         except TencentCloudSDKException as err:
-            print(err)
+            logger.info(err)
 
-    # def VatInvoiceOCR(self, ImageBase64, ImageUrl):
-    #     """
-    #     本接口支持增值税专用发票、增值税普通发票、增值税电子发票全字段的内容检测和识别，
-    #     包括发票代码、发票号码、打印发票代码、打印发票号码、开票日期、合计金额、校验码、税率、合计税额、价税合计、购买方识别号、复核、销售方识别号、开票人、密码区1、密码区2、密码区3、密码区4、发票名称、购买方名称、销售方名称、服务名称、备注、规格型号、数量、单价、金额、税额、收款人等字段。
-    #
-    #     默认接口请求频率限制：10次/秒。
-    #     图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
-    #     :param ImageBase64:
-    #     :param ImageUrl:
-    #     :return:
-    #     """
-    #     try:
-    #         req = models.VatInvoiceOCRRequest()
-    #         req.from_json_string(self.get_params(ImageBase64, ImageUrl))
-    #         resp = self.client.VatInvoiceOCR(req)
-    #         return resp
-    #
-    #     except TencentCloudSDKException as err:
-    #         print(err)
+    def VatInvoiceOCR(self, ImageBase64, ImageUrl):
+        """
+        本接口支持增值税专用发票、增值税普通发票、增值税电子发票全字段的内容检测和识别，
+        包括发票代码、发票号码、打印发票代码、打印发票号码、开票日期、合计金额、校验码、税率、合计税额、价税合计、购买方识别号、复核、销售方识别号、开票人、密码区1、密码区2、密码区3、密码区4、发票名称、购买方名称、销售方名称、服务名称、备注、规格型号、数量、单价、金额、税额、收款人等字段。
+
+        默认接口请求频率限制：10次/秒。
+        图片的 ImageUrl、ImageBase64 必须提供一个，如果都提供，只使用 ImageUrl。
+        :param ImageBase64:
+        :param ImageUrl:
+        :return:
+        """
+        try:
+            req = models.VatInvoiceOCRRequest()
+            req.from_json_string(self.get_params(ImageBase64, ImageUrl))
+            resp = self.client.VatInvoiceOCR(req)
+            return resp
+
+        except TencentCloudSDKException as err:
+            print(err)

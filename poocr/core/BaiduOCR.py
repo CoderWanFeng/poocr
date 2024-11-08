@@ -29,7 +29,6 @@ class BaiduOCR():
         }
         response = requests.request("POST", url, headers=headers, data=payload)
 
-        # print(response.json['access_token'])
         res = json.loads(response.text)
         return res['access_token']
 
@@ -49,8 +48,7 @@ class BaiduOCR():
         headers = {'content-type': 'application/x-www-form-urlencoded'}
         response = requests.post(request_url, data=params, headers=headers)
         if response:
-            # print(response.json())
             return response.json()
         else:
-            print('no response,help:http://www.python4office.cn/wechat-group/')
+            logger.info('no response,help:http://www.python4office.cn/wechat-group/')
             return None

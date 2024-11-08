@@ -34,36 +34,34 @@ def household2excel(ak, sk, img_path: list, output_excel: str = r'./household2ex
         .build()
 
     request = RecognizeHouseholdRegisterRequest()
-    try:
 
-        ticket_list = []
-        img_list = get_files(img_path)
-        for item in img_list:
-            request.body = HouseholdRegisterRequestBody(
-                image=img2base64(item)
-            )
+    ticket_list = []
+    img_list = get_files(img_path)
+    for item in img_list:
+        request.body = HouseholdRegisterRequestBody(
+            image=img2base64(item)
+        )
+        try:
             response = client.recognize_household_register(request)
             time.sleep(3)
             # response.result
-            print(response)
-            for res_info in simple_progress(response.to_dict()["result"]):
-                if res_info['type'] == "登记页":
-                    one_content = res_info['content']
-                    key_content = {}
-                    key_content['文件名'] = Path(item).stem
-                    key_content['姓名'] = one_content['name']
-                    key_content['身份证号码'] = one_content['id_card_number']
-                    if len(one_content['id_card_number']) < 18:
-                        key_content['备注'] = '身份证号码小于18位'
-                    key_content['与户主关系'] = one_content['householder_relationship']
-                    ticket_list.append(key_content)
+
+            if response.status_code == 200:
+                response_dict = response.to_dict()
+                for res_info in simple_progress(response_dict["result"]):
+                    if res_info['type'] == "登记页":
+                        one_content = res_info['content']
+                        one_content['文件名'] = Path(item).stem
+                        if len(one_content['id_card_number']) < 18:
+                            one_content['备注'] = '身份证号码小于18位'
+                        ticket_list.append(one_content)
+        except exceptions.ClientRequestException as e:
+            logger.info(f'{Path(item).stem}识别失败，原因：{e.error_msg}')
+    if len(ticket_list) > 0:
         ticket_df = pd.DataFrame(ticket_list)
         ticket_df.to_excel(output_excel, index=None)
-    except exceptions.ClientRequestException as e:
-        print(e.status_code)
-        print(e.request_id)
-        print(e.error_code)
-        print(e.error_msg)
+    else:
+        logger.info('没有识别到任何户口本图片')
 
 
 def household2excel2(ak, sk, img_path: list, output_excel: str = r'./household2excel.xlsx'):
@@ -72,24 +70,24 @@ def household2excel2(ak, sk, img_path: list, output_excel: str = r'./household2e
     # 本示例以ak和sk保存在环境变量中为例，运行本示例前请先在本地环境中设置环境变量HUAWEICLOUD_SDK_AK和HUAWEICLOUD_SDK_SK。
     sig.Key = ak
     sig.Secret = sk
-    img = img2base64(img_path)
-    body = "base64=data:image/jpeg;base64," + quote(img)
-    # print(img)
-    r = signer.HttpRequest(method="POST",
-                           url="https://jmhkbocr.apistore.huaweicloud.com/ocr/householdRegister",
-                           headers={'Content-Type': 'application/x-www-form-urlencoded'},
-                           body=body)
-    sig.Sign(r)
-    resp = requests.request(r.method, r.scheme + "://" + r.host + r.uri, headers=r.headers, data=r.body)
-    # logger.info(resp.status_code, resp.reason, resp.content)
-    content = resp.content
-    print(json.loads(content))
-
-    # print(content.decode('utf-8'))
-    """
-    {'data': {'birthAddress': '中国云南省富民县', 'name': '杨利琼', 'relationship': '妻', 'cardNo': '530124196710280543', 'sex': '女', 'nation': '汉', 'belief': '无宗教信仰', 'career': '粮农', 'maritalStatus': '已婚', 'registerDate': '', 'birthday': '1967年10月28日', 'education': '初中', 'hometown': '中国云南省富民县', 'whenWhereToHere': '就地农转城派出所内移入20140520云南省富民县富民县公安局款庄派出所多宜甲村123号', 'whenWhereToCity': '年月日中国', 'householdNum': '', 'formerName': '', 'otherAddress': '', 'height': '159厘米', 'bloodType': '不明', 'veteranStatus': '未服兵役', 'workAddress': '多宜办事处多宜甲村'}, 'msg': '成功', 'success': True, 'code': 200, 'taskNo': '280995649212629441046596'}
-
-    """
+    res_list = []
+    for one_img in simple_progress(get_files(img_path)):
+        img = img2base64(one_img)
+        body = "base64=data:image/jpeg;base64," + quote(img)
+        r = signer.HttpRequest(method="POST",
+                               url="https://jmhkbocr.apistore.huaweicloud.com/ocr/householdRegister",
+                               headers={'Content-Type': 'application/x-www-form-urlencoded'},
+                               body=body)
+        sig.Sign(r)
+        resp = requests.request(r.method, r.scheme + "://" + r.host + r.uri, headers=r.headers, data=r.body)
+        content = resp.content
+        api_res_json = json.loads(content.decode('utf-8'))
+        if api_res_json['code'] == 200 and api_res_json['data'] != None:
+            api_res_json['data']['文件名'] = Path(one_img).stem
+            res_list.append(api_res_json['data'])
+    res_df = pd.DataFrame(res_list)
+    # res_df.append_(pd.DataFrame(, index=[0]))
+    res_df.to_excel(output_excel, index=None)
 
 
 if __name__ == '__main__':
