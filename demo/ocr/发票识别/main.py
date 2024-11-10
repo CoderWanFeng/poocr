@@ -6,4 +6,6 @@
 @Date    ：2023/5/13 23:14 
 @Description     ：
 '''
+import poocr
 
+poocr.ocr2excel.VatInvoiceOCR2Excel(r"E:\Python\程序员晚枫的文件夹\POCR\发票", "识别结果.xlsx")
