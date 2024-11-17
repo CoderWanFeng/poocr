@@ -11,6 +11,7 @@ import sys
 
 from poocr.core.BaiduOCR import BaiduOCR
 from poocr.core.OCR import OCR
+from poocr.core.OfdOCR import OfdOCR
 from poocr.lib.CommonUtils import img2base64
 
 
@@ -20,7 +21,7 @@ def get_ocr(configPath, id, key):
     return ocr
 
 
-def do_api(OCR_NAME, img_path, img_url, configPath, id, key,pdf_path=None):
+def do_api(OCR_NAME, img_path, img_url, configPath, id, key, pdf_path=None):
     """
     通过类的方法名，直接调用方法
     :return:
@@ -30,7 +31,7 @@ def do_api(OCR_NAME, img_path, img_url, configPath, id, key,pdf_path=None):
         with open(pdf_path, 'rb') as file:
             pdf_data = file.read()
             base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
-            ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url,IsPdf=True)
+            ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
     elif img_url:
         ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=img_path, ImageUrl=img_url)
     else:
@@ -631,12 +632,18 @@ def VerifyEnterpriseFourFactors(img_path=None, img_url=None, configPath=None, id
                   id=id, key=key)
 
 
-def VerifyOfdVatInvoiceOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
-    return do_api(OCR_NAME=str(sys._getframe().f_code.co_name),
-                  img_path=img_path,
-                  img_url=img_url,
-                  configPath=configPath,
-                  id=id, key=key)
+def VerifyOfdVatInvoiceOCR(ofd_file_path=None, ofd_file_url=None, id=None, key=None):
+    ocr = OfdOCR()
+    ocr.set_config(id, key)
+    if ofd_file_path:
+        with open(ofd_file_path, 'rb') as file:
+            pdf_data = file.read()
+            base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
+            ocr_res = ocr.DoOCR(OfdFileBase64=base64_encoded_pdf)
+    elif ofd_file_url:
+        ocr_res = ocr.DoOCR(OfdFileUrl=ofd_file_url)
+
+    return ocr_res
 
 
 def VinOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
