@@ -21,7 +21,7 @@ from loguru import logger
 from pofile import get_files
 from poprogress import simple_progress
 
-from poocr.lib.CommonUtils import img2base64
+from poocr.lib.CommonUtils import img2base64, pdf2base64
 from poocr.lib.apig_sdk import signer
 
 
@@ -62,6 +62,44 @@ def household2excel(ak, sk, img_path: list, output_excel: str = r'./household2ex
         ticket_df.to_excel(output_excel, index=None)
     else:
         logger.info('没有识别到任何户口本图片')
+
+
+def BankReceipt2excel(ak, sk, file_path, output_excel: str = r'./BankReceipt2excel.xlsx'):
+    credentials = BasicCredentials(ak, sk)
+
+    client = OcrClient.new_builder() \
+        .with_credentials(credentials) \
+        .with_region(OcrRegion.value_of("cn-north-4")) \
+        .build()
+
+    # request = RecognizeHouseholdRegisterRequest()
+    request = RecognizeBankReceiptRequest()
+
+    ticket_list = []
+    img_list = get_files(file_path)
+    for item in img_list:
+        for base64_encoded_pdf in pdf2base64(item):
+            request.body = BankReceiptRequestBody(
+                data=base64_encoded_pdf
+            )
+            try:
+                response = client.recognize_bank_receipt(request)
+                time.sleep(3)
+                if response.status_code == 200:
+                    response_dict = response.to_dict()
+                    for bank_info in simple_progress(response_dict["result"]["bank_receipt_list"]):
+                        one_content = bank_info['kv_pair_list']
+                        one_content_dict = {}
+                        for kv in one_content:
+                            one_content_dict[kv['key']] = kv['value']
+                        ticket_list.append(one_content_dict)
+            except exceptions.ClientRequestException as e:
+                logger.info(f'{Path(item).stem}识别失败，原因：{e.error_msg}')
+    if len(ticket_list) > 0:
+        ticket_df = pd.DataFrame(ticket_list)
+        ticket_df.to_excel(output_excel, index=None)
+    else:
+        logger.info('没有识别到任何银行回单PDF/图片')
 
 
 def household2excel2(ak, sk, img_path: list, output_excel: str = r'./household2excel.xlsx'):

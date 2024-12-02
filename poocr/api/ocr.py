@@ -9,6 +9,10 @@
 import base64
 import sys
 
+import PyPDF2
+import fitz
+from loguru import logger
+
 from poocr.core.BaiduOCR import BaiduOCR
 from poocr.core.OCR import OCR
 from poocr.core.OfdOCR import OfdOCR
@@ -28,10 +32,19 @@ def do_api(OCR_NAME, img_path, img_url, configPath, id, key, pdf_path=None):
     """
     ocr = get_ocr(configPath, id, key)
     if pdf_path:
-        with open(pdf_path, 'rb') as file:
-            pdf_data = file.read()
-            base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
-            ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
+        # 打开PDF文件
+        pdf = fitz.open(pdf_path)
+
+        pdf_bytes = pdf.convert_to_pdf(0, 1)
+        # 将图片转换为Base64编码的字符串
+        base64_encoded_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+        # 关闭PDF文档
+        pdf.close()
+        ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
+
+            # pdf_data = file.read()
+            # base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
+            # ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
     elif img_url:
         ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=img_path, ImageUrl=img_url)
     else:
@@ -64,12 +77,12 @@ def BankCardOCR(img_path=None, img_url=None, configPath=None, id=None, key=None)
                   id=id, key=key)
 
 
-def BankSlipOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
+def BankSlipOCR(img_path=None, img_url=None, configPath=None, id=None, key=None, pdf_path=None):
     return do_api(OCR_NAME=str(sys._getframe().f_code.co_name),
                   img_path=img_path,
                   img_url=img_url,
                   configPath=configPath,
-                  id=id, key=key)
+                  id=id, key=key, pdf_path=pdf_path)
 
 
 def BizLicenseOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):

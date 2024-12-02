@@ -13,3 +13,4 @@ script/
 */*-config.toml
 __pycache__
 */sh2exe/*
+tests/test_files

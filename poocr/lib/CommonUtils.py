@@ -6,9 +6,8 @@
 @Date    ：2023/1/22 18:45
 @Description     ：通用的一些方法
 '''
-import base64
 
-from loguru import logger
+import fitz  # PyMuPDF
 
 
 def get_error_info(error_info):
@@ -31,6 +30,20 @@ def img2base64(imgPath):
         return picbase
 
 
+import base64
+
+
+def pdf2base64(pdf_path):
+    base64_encoded_pdf = []
+    pdf = fitz.open(pdf_path)
+    for i in range(len(pdf)):
+        pdf_bytes = pdf.convert_to_pdf(i, i + 1)
+        # 灏嗗浘鐗囪浆鎹负Base64缂栫爜鐨勫瓧绗︿覆
+        base64_encoded_pdf.append(base64.b64encode(pdf_bytes).decode('utf-8'))
+    # 鍏抽棴PDF鏂囨。
+    pdf.close()
+    return base64_encoded_pdf
+
+
 if __name__ == '__main__':
-    res = img2base64(imgPath=r'C:\Us-01-25_00-18-41.jpg')
-    logger.info(res)
+    pdf2base64(pdf_path=r'D:\workplace\code\github\poocr\tests\test_files\4-银行回单\huawei\002.pdf')

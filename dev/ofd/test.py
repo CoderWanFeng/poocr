@@ -79,7 +79,7 @@ def VerifyOfdVatInvoiceOCR(ofd_file_path=None, ofd_file_url=None, id=None, key=N
 
 
 if __name__ == '__main__':
-    SecretId = 'AKID3ygKolZBpZDk6XsAIC1f9UnuDLFvMLEy'
+    SecretId = os.getenv("SecretId", None)
     SecretKey = 'xxx'
     ofd_file_path = r'./suzhou.ofd'
     res = VerifyOfdVatInvoiceOCR(ofd_file_path=ofd_file_path, id=SecretId, key=SecretKey)

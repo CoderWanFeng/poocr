@@ -6,6 +6,10 @@
 @Date    ：2023/5/13 23:14 
 @Description     ：
 '''
+
+# 批量识别发票
+# pip install poocr
 import poocr
 
-poocr.ocr2excel.VatInvoiceOCR2Excel(r"E:\Python\程序员晚枫的文件夹\POCR\发票", "识别结果.xlsx")
+poocr.ocr2excel.VatInvoiceOCR2Excel(input_path=r"E:\Python\程序员晚枫的文件夹\POCR\发票",
+                                    output_path="识别结果.xlsx")
