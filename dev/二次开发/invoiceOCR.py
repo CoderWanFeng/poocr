@@ -1,4 +1,4 @@
-import fitz
+import pymupdf
 # pip install potencent
 from poocr.api.ocr import VatInvoiceOCR
 from pathlib import Path
@@ -48,7 +48,7 @@ class InvoiceInfo(object):
         # 遍历PDF路径列表
         for pdf in pdf_all_path:
             # 打开PDF文件
-            pdf_file = fitz.open(pdf)
+            pdf_file = pymupdf.open(pdf)
             # 新建文件夹路径
             pdf_name = f'{pdf}'.replace(".pdf", "")
             # 创建与pdf名称相同的文件夹(用于保存图片)
@@ -71,7 +71,7 @@ class InvoiceInfo(object):
                         zoom_y = 3.0
 
                         # 定义图片
-                        trans = fitz.Matrix(zoom_x, zoom_y).prerotate(rotate)
+                        trans = pymupdf.Matrix(zoom_x, zoom_y).prerotate(rotate)
                         pm = page.get_pixmap(matrix=trans, alpha=False)
                         # 保存图片
                         root = f"{pdf_name}/{pdf.name.replace('.pdf','')}_{str(i+1).zfill(4)}.png"

@@ -9,9 +9,7 @@
 import base64
 import sys
 
-import PyPDF2
-import fitz
-from loguru import logger
+import pymupdf
 
 from poocr.core.BaiduOCR import BaiduOCR
 from poocr.core.OCR import OCR
@@ -33,7 +31,7 @@ def do_api(OCR_NAME, img_path, img_url, configPath, id, key, pdf_path=None):
     ocr = get_ocr(configPath, id, key)
     if pdf_path:
         # 打开PDF文件
-        pdf = fitz.open(pdf_path)
+        pdf = pymupdf.open(pdf_path)
 
         pdf_bytes = pdf.convert_to_pdf(0, 1)
         # 将图片转换为Base64编码的字符串
@@ -42,9 +40,9 @@ def do_api(OCR_NAME, img_path, img_url, configPath, id, key, pdf_path=None):
         pdf.close()
         ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
 
-            # pdf_data = file.read()
-            # base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
-            # ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
+        # pdf_data = file.read()
+        # base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
+        # ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
     elif img_url:
         ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=img_path, ImageUrl=img_url)
     else:

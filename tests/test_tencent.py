@@ -1,6 +1,7 @@
 import os
 import unittest
 
+from poocr.api.ocr import DutyPaidProofOCR
 from poocr.api.ocr2excel import *
 from poocr.core.HuaweiOCR import BankReceipt2excel
 
@@ -62,3 +63,9 @@ class TestTencent(unittest.TestCase):
 
     def test_bank_huawei(self):
         BankReceipt2excel(ak=self.ak, sk=self.sk, file_path=r"./test_files/4-银行回单/huawei/")
+
+    def test_DutyPaidProofOCR(self):
+        res = DutyPaidProofOCR(
+            img_path=r'D:\workplace\code\github\poocr\dev\完税凭证\a91e72851b15cd76695e56ae70e09dc0326432.jpg.crdownload',
+            id=self.SecretId, key=self.SecretKey)
+        print(res)

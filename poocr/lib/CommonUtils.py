@@ -7,7 +7,7 @@
 @Description     ：通用的一些方法
 '''
 
-import fitz  # PyMuPDF
+import pymupdf  # PyMuPDF
 
 
 def get_error_info(error_info):
@@ -35,7 +35,7 @@ import base64
 
 def pdf2base64(pdf_path):
     base64_encoded_pdf = []
-    pdf = fitz.open(pdf_path)
+    pdf = pymupdf.open(pdf_path)
     for i in range(len(pdf)):
         pdf_bytes = pdf.convert_to_pdf(i, i + 1)
         # 灏嗗浘鐗囪浆鎹负Base64缂栫爜鐨勫瓧绗︿覆
