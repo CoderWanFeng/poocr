@@ -238,7 +238,7 @@ def BankCardOCR2Excel(input_path, output_path=None, output_excel='BankCardOCR2Ex
                       configPath=None, id=None, key=None):
     """
     识别银行卡，自动保存为Excel文件
-    :param input_path: 必填，银行卡图片的位置
+    :param input_path: 必填，银行卡图片存放位置，可以填单个文件，也可以填一个目录
     :param output_path: 选填，输出Excel的位置
     :param output_excel: 选填，输出Excel的名称
     :param img_url: 选填，可以是网络图片
@@ -247,22 +247,43 @@ def BankCardOCR2Excel(input_path, output_path=None, output_excel='BankCardOCR2Ex
     :param key: 你的腾讯账号的密钥，获取方式：https://curl.qcloud.com/fuOGcm2R
     :return:
     """
-    test_json = poocr.ocr.BankCardOCR(img_path=input_path, img_url=img_url, configPath=configPath, id=id,
-                                      key=key)
-    df = pd.DataFrame(json.loads(str(test_json)), index=[0])
+    bankcard_img_files = get_files(input_path)
+    if bankcard_img_files == None:
+        raise BaseException(f'{input_path}这个路径下，没有存放任何银行卡，请确认后重新运行')
     if output_path == None:
         output_path = './'
     mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
     if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
         abs_output_excel = Path(output_path).absolute() / output_excel
-    df.to_excel(str(abs_output_excel), index=False)
+    else:  # 指定了，但不是xlsx或者xls结束
+        raise BaseException(
+            f'输出结果名：output_excel参数，必须以xls或者xlsx结尾，您的输入:{output_excel}有误，请修改后重新运行')
+    res_df = []  # 装全部识别的结果
+    for bankcard_img in simple_progress(bankcard_img_files):
+        try:
+            test_json = poocr.ocr.BankCardOCR(img_path=bankcard_img, img_url=img_url, configPath=configPath, id=id,
+                                              key=key)
+            res_df.append(pd.DataFrame(json.loads(str(test_json)), index=[0]))
+        except Exception as e:
+            logger.error(e)
+            continue
+    # 整理全部识别结果
+    if len(res_df) > 0:
+        res_excel = res_df[0]
+        for index, line_df in enumerate(res_df):
+            if index == 0:
+                continue
+            res_excel = res_excel._append(line_df)
+        pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
+    else:
+        logger.info(f'该文件夹下，没有任何符合条件的银行卡图片')
 
 
 def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePlateOCR2Excel.xlsx', img_url=None,
                           configPath=None, id=None, key=None):
     """
-    识别银行卡，自动保存为Excel文件
-    :param input_path: 必填，银行卡图片的位置
+    识别车牌，自动保存为Excel文件
+    :param input_path: 必填，车牌图片存放位置，可以填单个文件，也可以填一个目录
     :param output_path: 选填，输出Excel的位置
     :param output_excel: 选填，输出Excel的名称
     :param img_url: 选填，可以是网络图片
@@ -271,15 +292,34 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
     :param key: 你的腾讯账号的密钥，获取方式：https://curl.qcloud.com/fuOGcm2R
     :return:
     """
-    test_json = poocr.ocr.LicensePlateOCR(img_path=input_path, img_url=img_url, configPath=configPath, id=id,
-                                          key=key)
-    df = pd.DataFrame(json.loads(str(test_json)), index=[0])
-    if output_path == None:
-        output_path = './'
+    license_plates_img_files = get_files(input_path)
+    if license_plates_img_files == None:
+        raise BaseException(f'{input_path}这个路径下，没有存放任何车牌，请确认后重新运行')
     mkdir(Path(output_path).absolute())  # 如果不存在，则创建输出目录
     if output_excel.endswith('.xlsx') or output_excel.endswith('xls'):  # 如果指定的输出excel结尾不正确，则报错退出
         abs_output_excel = Path(output_path).absolute() / output_excel
-    df.to_excel(str(abs_output_excel), index=False)
+    else:  # 指定了，但不是xlsx或者xls结束
+        raise BaseException(
+            f'输出结果名：output_excel参数，必须以xls或者xlsx结尾，您的输入:{output_excel}有误，请修改后重新运行')
+    res_df = []  # 装全部识别的结果
+    for license_plates_img in simple_progress(license_plates_img_files):
+        try:
+            test_json = poocr.ocr.LicensePlateOCR(img_path=license_plates_img, img_url=img_url, configPath=configPath,
+                                                  id=id, key=key)
+            res_df.append(pd.DataFrame(json.loads(str(test_json)), index=[0]))
+        except Exception as e:
+            logger.error(e)
+            continue
+    # 整理全部识别结果
+    if len(res_df) > 0:
+        res_excel = res_df[0]
+        for index, line_df in enumerate(res_df):
+            if index == 0:
+                continue
+            res_excel = res_excel._append(line_df)
+        pd.DataFrame(res_excel).to_excel(str(abs_output_excel))  # 写入Excel
+    else:
+        logger.info(f'该文件夹下，没有任何符合条件的车牌图片')
 
 
 def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
