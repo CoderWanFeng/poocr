@@ -10,6 +10,7 @@ import base64
 import sys
 
 import pymupdf
+from loguru import logger
 
 from poocr.core.BaiduOCR import BaiduOCR
 from poocr.core.OCR import OCR
@@ -33,13 +34,28 @@ def do_api(OCR_NAME, img_path, img_url, configPath, id, key, pdf_path=None):
         # 打开PDF文件
         pdf = pymupdf.open(pdf_path)
 
-        pdf_bytes = pdf.convert_to_pdf(0, 1)
-        # 将图片转换为Base64编码的字符串
-        base64_encoded_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+        # 存储所有页面的识别结果  1
+        all_results = []
+
+        # 遍历每一页  2
+        for page_num in range(len(pdf)):
+            pdf_bytes = pdf.convert_to_pdf(page_num, page_num + 1)
+            # 将图片转换为Base64编码的字符串
+            base64_encoded_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+
+            # 识别当前页  3
+            page_result = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
+
+            # 将当前页结果添加到总结果中  4
+            all_results.append(page_result)
         # 关闭PDF文档
         pdf.close()
-        ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
-
+        # ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
+        # 如果只有一页，直接返回结果 6
+        if len(all_results) == 1:
+            return all_results[0]
+        # 否则返回所有页面的结果列表
+        return all_results
         # pdf_data = file.read()
         # base64_encoded_pdf = base64.b64encode(pdf_data).decode('utf-8')
         # ocr_res = ocr.DoOCR(OCR_NAME, ImageBase64=base64_encoded_pdf, ImageUrl=img_url, IsPdf=True)
@@ -666,6 +682,14 @@ def VinOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
 
 
 def WaybillOCR(img_path=None, img_url=None, configPath=None, id=None, key=None):
+    return do_api(OCR_NAME=str(sys._getframe().f_code.co_name),
+                  img_path=img_path,
+                  img_url=img_url,
+                  configPath=configPath,
+                  id=id, key=key)
+
+
+def RecognizeGeneralInvoice(img_path=None, img_url=None, configPath=None, id=None, key=None):
     return do_api(OCR_NAME=str(sys._getframe().f_code.co_name),
                   img_path=img_path,
                   img_url=img_url,

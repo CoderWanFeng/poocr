@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from poocr.api.ocr import DutyPaidProofOCR
+from poocr.api.ocr import DutyPaidProofOCR, VerifyOfdVatInvoiceOCR
 from poocr.api.ocr2excel import *
 from poocr.core.HuaweiOCR import BankReceipt2excel
 
@@ -25,9 +25,10 @@ class TestTencent(unittest.TestCase):
         print(res)
 
     def test_VatInvoiceOCR2Excel(self):
-        VatInvoiceOCR2Excel(intput_path=r'./test_files/4-银行回单/001.pdf',
+        VatInvoiceOCR2Excel(input_path=r'./test_files/火车票/1-铁路电子客票.pdf',
                             output_excel=r'./VatInvoiceOCR2Excel.xlsx',
-                            configPath=r'./poocr-config.toml')
+                            id=self.SecretId, key=self.SecretKey
+                            )
 
     def test_BankSlipOCR2Excel(self):
         BankSlipOCR2Excel(input_path=r'test_files/4-银行回单/huawei/002.pdf',
@@ -37,7 +38,8 @@ class TestTencent(unittest.TestCase):
                           )
 
     def test_TrainTicketOCR2Excel(self):
-        TrainTicketOCR2Excel(input_path='', output_excel='', configPath='fdasf')
+        TrainTicketOCR2Excel(input_path=r'./test_files/火车票/Snipaste_2025-01-18_14-51-10.jpg', id=self.SecretId,
+                             key=self.SecretKey)
 
     def test_BizLicenseOCR(self):
         res = poocr.ocr.BizLicenseOCR(img_path=r'./test_files/biz_img/demo1.png', id=self.SecretId, key=self.SecretKey)
@@ -69,3 +71,14 @@ class TestTencent(unittest.TestCase):
             img_path=r'D:\workplace\code\github\poocr\dev\完税凭证\a91e72851b15cd76695e56ae70e09dc0326432.jpg.crdownload',
             id=self.SecretId, key=self.SecretKey)
         print(res)
+
+    def test_VerifyOfdVatInvoiceOCR_Train(self):
+        res = VerifyOfdVatInvoiceOCR(ofd_file_path=r'./test_files/火车票/08da5fd7-bac1-4757-a578-a7cb695351b7.ofd',
+                                     id=self.SecretId, key=self.SecretKey)
+        logger.info(res)
+
+    def test_RET2excel(self):
+        RET2excel(img_path=r'./test_files/train/imgs',
+                  output_path=r'./test_files/train',
+                  output_excel=r'./RET2excel.xlsx',
+                  id=self.SecretId, key=self.SecretKey)

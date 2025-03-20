@@ -12,6 +12,7 @@ from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentClo
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.ocr.v20181119 import ocr_client, models
+import json
 
 from poocr.lib.Config import poocrConfig
 from poocr.lib.Const import NO_FILE_ERROR
@@ -50,17 +51,19 @@ class OCR(poocrConfig):
     def get_params(self, ImageBase64, ImageUrl):
         """
         图片的ImageUrl、ImageBase64必须提供一个，如果都提供，只使用ImageUrl。
-        :param ImageBase64:
-        :param ImageUrl:
-        :return:
+        如果 type 不为 None，则在参数中添加 type 字段。
+        :param ImageBase64: 图片的 Base64 编码
+        :param ImageUrl: 图片的 URL
+        :param type: 类型列表，列表中的每个元素都是 int 类型
+        :return: 包含图片信息和类型信息的 JSON 字符串或错误信息
         """
         if ImageUrl:
-            params = '{\"ImageUrl\":\"%s\"} ' % ImageUrl
+            params = {"ImageUrl": ImageUrl}
         elif ImageBase64:
-            params = '{\"ImageBase64\":\"%s\"} ' % ImageBase64
+            params = {"ImageBase64": ImageBase64}
         else:
-            return NO_FILE_ERROR
-        return params
+            return json.dumps(NO_FILE_ERROR)
+        return json.dumps(params)
 
     def DoOCR(self, OCR_NAME, ImageBase64, ImageUrl, IsPdf=False):
 
