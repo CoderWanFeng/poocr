@@ -28,4 +28,4 @@ SecretKey = os.getenv("SecretKey")
 #
 # df.to_excel('car.xlsx', index=False)
 
-poocr.ocr2excel.LicensePlateOCR2Excel(input_path=r'./files/car_test.png', id=SecretId, key=SecretKey)
+poocr.ocr2excel.LicensePlateOCR2Excel(input_path=r'files/car_test.png', id=SecretId, key=SecretKey)

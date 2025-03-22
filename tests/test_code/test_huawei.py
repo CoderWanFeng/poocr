@@ -20,7 +20,7 @@ class TestTencent(unittest.TestCase):
 
     def test_hukouben2(self):
         r = household2excel2(ak=self.SecretId, sk=self.SecretKey,
-                             img_path=r'../test_files/户口本/7121976潘会江户口簿_01.png')
+                             img_path=r'../test_files/户口本/7121976户口簿_01.png')
         r = household2excel2(ak=self.SecretId, sk=self.SecretKey,
-                             img_path=r'../test_files/户口本/7220102张瑞良户口薄_00.png')
+                             img_path=r'../test_files/户口本/7220102户口薄_00.png')
         print(r)

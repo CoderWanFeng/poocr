@@ -81,7 +81,7 @@ def VerifyOfdVatInvoiceOCR(ofd_file_path=None, ofd_file_url=None, id=None, key=N
 if __name__ == '__main__':
     SecretId = os.getenv("SecretId", None)
     SecretKey = 'xxx'
-    ofd_file_path = r'./suzhou.ofd'
+    ofd_file_path = r'suzhou.ofd'
     res = VerifyOfdVatInvoiceOCR(ofd_file_path=ofd_file_path, id=SecretId, key=SecretKey)
     logger.error(res)
     ofd_file_url = 'https://test-1300615378.cos.ap-nanjing.myqcloud.com/suzhou.ofd'
