@@ -1,11 +1,5 @@
 # -*- coding: UTF-8 -*-
-'''
-@学习网站      ：https://www.python-office.com
-@读者群     ：http://www.python4office.cn/wechat-group/
-@作者  ：B站/抖音/微博/小红书/公众号，都叫：程序员晚枫，微信：CoderWanFeng
-@代码日期    ：2024/7/10 0:27 
-@本段代码的视频说明     ：
-'''
+
 import json
 import time
 from pathlib import Path
@@ -36,7 +30,9 @@ def household2excel(ak, sk, img_path: list, output_excel: str = r'./household2ex
     request = RecognizeHouseholdRegisterRequest()
 
     ticket_list = []
-    img_list = get_files(img_path)
+    img_list=[]
+    for path in img_path:
+        img_list.extend( get_files(path))
     for item in img_list:
         request.body = HouseholdRegisterRequestBody(
             image=img2base64(item)
@@ -109,7 +105,10 @@ def household2excel2(ak, sk, img_path: list, output_excel: str = r'./household2e
     sig.Key = ak
     sig.Secret = sk
     res_list = []
-    for one_img in simple_progress(get_files(img_path)):
+    img_list = []
+    for path in img_path:
+        img_list.extend(get_files(path))
+    for one_img in img_list:
         img = img2base64(one_img)
         body = "base64=data:image/jpeg;base64," + quote(img)
         r = signer.HttpRequest(method="POST",

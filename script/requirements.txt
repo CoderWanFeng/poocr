@@ -1,0 +1,7 @@
+colorama==0.4.6
+et_xmlfile==2.0.0
+openpyxl==3.1.5
+pofile==0.1.5
+poprogress==0.0.2
+psutil==7.0.0
+tqdm==4.67.1

@@ -1,18 +1,13 @@
 # -*- coding: UTF-8 -*-
-'''
-@Author  ：程序员晚枫，B站/抖音/微博/小红书/公众号
-@WeChat     ：CoderWanFeng
-@Blog      ：www.python-office.com
-@Date    ：2023/1/22 18:45
-@Description     ：文字识别功能，可以单独调用
-'''
+
+import json
+
 from loguru import logger
 from tencentcloud.common import credential
 from tencentcloud.common.exception.tencent_cloud_sdk_exception import TencentCloudSDKException
 from tencentcloud.common.profile.client_profile import ClientProfile
 from tencentcloud.common.profile.http_profile import HttpProfile
 from tencentcloud.ocr.v20181119 import ocr_client, models
-import json
 
 from poocr.lib.Config import poocrConfig
 from poocr.lib.Const import NO_FILE_ERROR
@@ -48,7 +43,7 @@ class OCR(poocrConfig):
         self.client = ocr_client.OcrClient(cred, "ap-beijing", clientProfile)
         return self.client
 
-    def get_params(self, ImageBase64, ImageUrl):
+    def get_params(self, ImageBase64, ImageUrl, is_pdf=False):
         """
         图片的ImageUrl、ImageBase64必须提供一个，如果都提供，只使用ImageUrl。
         如果 type 不为 None，则在参数中添加 type 字段。
@@ -63,6 +58,9 @@ class OCR(poocrConfig):
             params = {"ImageBase64": ImageBase64}
         else:
             return json.dumps(NO_FILE_ERROR)
+
+        if is_pdf:
+            params['EnableMultiplePage'] = True
         return json.dumps(params)
 
     def DoOCR(self, OCR_NAME, ImageBase64, ImageUrl, IsPdf=False):
@@ -70,7 +68,7 @@ class OCR(poocrConfig):
         try:
             ocr_req_func = getattr(models, f'{OCR_NAME}Request', None)
             req = ocr_req_func()
-            req.from_json_string(self.get_params(ImageBase64, ImageUrl))
+            req.from_json_string(self.get_params(ImageBase64, ImageUrl, (OCR_NAME == 'RecognizeGeneralInvoice' and IsPdf)))
             ocr_func = getattr(self.client, f'{OCR_NAME}', None)
             if OCR_NAME == 'VatInvoiceOCR' or OCR_NAME == 'BankSlipOCR':
                 req.IsPdf = IsPdf
