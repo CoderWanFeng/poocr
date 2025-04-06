@@ -7,14 +7,17 @@ from collections import OrderedDict
 from pathlib import Path
 
 import pandas as pd
+import potx
 from loguru import logger
 from pofile import get_files, mkdir
 from poprogress import simple_progress
 
 import poocr
-from poocr.api.ocr import VatInvoiceOCR, IDCardOCR, BizLicenseOCR, BankSlipOCR, RecognizeGeneralInvoice
+from poocr.api.ocr import VatInvoiceOCR, IDCardOCR, BizLicenseOCR, BankSlipOCR, RecognizeGeneralInvoice, TrainTicketOCR
 from poocr.core import HuaweiOCR
 
+
+##### 调用poocr的原生接口 #####
 
 def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceOCR2Excel.xlsx', img_url=None,
                         configPath=None, id=None, key=None, file_name=False, trans=False):
@@ -56,8 +59,8 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
                 # 处理api_res可能是列表的情况（多页pdf）
             if isinstance(api_res, list):
                 # 遍历每一页结果
-                for page_res in api_res:
-                    VatInvoiceOCR2(page_res, vat_img, file_name, trans, res_df)
+                for pdf_page, page_res in enumerate(api_res):
+                    VatInvoiceOCR2(page_res, vat_img, file_name, trans, res_df, pdf_page + 1)
             else:
                 VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df)
         except Exception as e:
@@ -69,7 +72,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
         df = pd.DataFrame(res_df)
         df.to_excel(str(abs_output_excel), index=None, engine='openpyxl')
     else:
-        logger.warning(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
+        logger.error(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
 
 
 def BankSlipOCR2Excel(input_path, output_path=r'./', output_excel='BankSlipOCR2Excel.xlsx', img_url=None,
@@ -105,7 +108,7 @@ def BankSlipOCR2Excel(input_path, output_path=r'./', output_excel='BankSlipOCR2E
     for vat_img in simple_progress(vat_img_files):
         try:
             if Path(vat_img).suffix == '.pdf':
-                api_res = BankSlipOCR(pdf_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
+                api_res = BankSlipOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
             else:
                 api_res = BankSlipOCR(img_path=str(vat_img), img_url=img_url, configPath=configPath, id=id, key=key)
             api_res_json = json.loads(str(api_res), object_pairs_hook=OrderedDict)
@@ -187,14 +190,26 @@ def IDCardOCR2Excel(input_path, output_path=None, output_excel='IDCardOCR2Excel.
 
 
 def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR2Excel.xlsx', img_url: str = None,
-                         configPath: str = None) -> None:
+                         configPath: str = None, id=None, key=None) -> None:
     ticket_list = []
     ticket_files = get_files(input_path)
     for ticket in simple_progress(ticket_files):
-        ticket_info = poocr.ocr.TrainTicketOCR(img_path=ticket, img_url=img_url, configPath=configPath)
-        ticket_list.append(ticket_info)
-    ticket_df = pd.DataFrame(ticket_list)
-    ticket_df.to_excel(output_excel, index=None)
+        try:
+            api_res = TrainTicketOCR(img_path=ticket, img_url=img_url, configPath=configPath, id=id, key=key)
+            api_res_json = json.loads(str(api_res))
+            ticket_list.append(pd.DataFrame(api_res_json, index=[0]))
+        except:
+            continue
+    # 整理全部识别结果
+    if len(ticket_list) > 0:
+        res_excel = ticket_list[0]
+        for index, line_df in enumerate(ticket_list):
+            if index == 0:
+                continue
+            res_excel = res_excel._append(line_df)
+        pd.DataFrame(res_excel).to_excel(str(output_excel))  # 写入Excel
+    else:
+        logger.info(f'该文件夹下，没有任何符合条件的火车票图片')
 
 
 def BankCardOCR2Excel(input_path, output_path=None, output_excel='BankCardOCR2Excel.xlsx', img_url=None,
@@ -285,45 +300,6 @@ def LicensePlateOCR2Excel(input_path, output_path=None, output_excel='LicensePla
         logger.info(f'该文件夹下，没有任何符合条件的车牌图片')
 
 
-def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
-    """
-    将户口图片转换为Excel格式。
-
-    本函数通过调用华为云的OCR服务，将户口图片中的信息识别并转换为Excel格式。
-    使用华为云账号的访问密钥（ak）和安全密钥（sk）进行身份验证，
-    指定图片文件的路径（img_path），并可选地指定输出的Excel文件名（output_excel）。
-
-    参数:
-    ak (str): 华为云账号的访问密钥。
-    sk (str): 华为云账号的安全密钥。
-    img_path (str): 户口图片文件的路径。
-    output_excel (str, 可选): 输出的Excel文件名。默认为'household2excel.xlsx'。
-
-    返回:
-    无直接返回值，结果为指定路径的Excel文件。
-    """
-    HuaweiOCR.household2excel(ak, sk, img_path, output_excel)
-
-
-def household2excel2(ak, sk, img_path, output_excel='household2excel.xlsx'):
-    """
-    将户口图像文件转换为Excel格式。
-
-    本函数通过调用华为OCR服务，将户口图像文件中的信息识别并提取出来，然后将这些信息保存到Excel文件中。
-    使用华为云的AK和SK进行身份验证，指定图像文件路径进行识别，可选地指定输出的Excel文件名。
-
-    参数:
-    - ak: 华为云的Access Key，用于身份验证。
-    - sk: 华为云的Secret Key，用于身份验证。
-    - img_path: 户口图像文件的路径，用于识别。
-    - output_excel: 输出的Excel文件名，默认为'household2excel.xlsx'。
-
-    返回:
-    无返回值，直接将识别结果保存在Excel文件中。
-    """
-    HuaweiOCR.household2excel2(ak, sk, img_path, output_excel)
-
-
 def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseOCR2Excel.xlsx', img_url=None,
                         configPath=None, id=None, key=None, file_name=False, trans=False):
     """
@@ -375,8 +351,7 @@ def BizLicenseOCR2Excel(input_path, output_path=r'./', output_excel='BizLicenseO
 
 
 def RecognizeGeneralInvoiceOCR2Excel(input_path, output_path=None, output_excel='RecognizeGeneralInvoiceOCR2Excel.xlsx',
-                                     img_url=None,
-                                     configPath=None, id=None, key=None, sub_type=None, file_name=False, trans=False):
+                                     img_url=None, configPath=None, id=None, key=None, sub_type=None):
     """
    通用识别发票信息并保存到Excel中。
 
@@ -387,8 +362,6 @@ def RecognizeGeneralInvoiceOCR2Excel(input_path, output_path=None, output_excel=
    :param configPath: 配置文件路径，用于指定OCR识别的配置。
    :param id: API的用户ID。
    :param key: API的密钥。
-   :param file_name: 是否在结果中包含文件名，默认为False。
-   :param trans: 是否进行翻译，默认为False。
    :param sub_type: 识别的类型 具体参数详见:https://cloud.tencent.com/document/api/866/90802  中SubType的列表信息
    :raises BaseException: 当输入目录为空或输出文件名格式不正确时抛出异常。
    """
@@ -407,27 +380,28 @@ def RecognizeGeneralInvoiceOCR2Excel(input_path, output_path=None, output_excel=
     res_df = []
     try:
         for item in simple_progress(img_paths):
-            invoice_info = {}
+
             api_res = RecognizeGeneralInvoice(img_path=str(item), img_url=img_url, configPath=configPath, id=id,
                                               key=key)
             api_res_json = json.loads(str(api_res))
             invoice_items = api_res_json['MixedInvoiceItems']
             for invoice_item in invoice_items:
-                if invoice_item['Type'] != sub_type:
+                invoice_info = {}
+                if sub_type is not None and invoice_item['Type'] != sub_type:
                     continue
                 if invoice_item['Code'] == 'OK':
                     single_invoice_info = invoice_item['SingleInvoiceInfos']
                     for item in single_invoice_info[invoice_item['SubType']]:
-                        if isinstance(item, (str, int)):
+                        if isinstance(single_invoice_info[invoice_item['SubType']][item], (str, int)):
                             invoice_info[item] = single_invoice_info[invoice_item['SubType']][item]
-            res_df.append(invoice_info)
+                res_df.append(invoice_info)
     except Exception as e:
         logger.info(f'{item}识别失败，原因：{e}')
     biz_def = pd.DataFrame(res_df)
     biz_def.to_excel(str(abs_output_excel), index=None)
 
 
-def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
+def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df, pdf_page=1):
     '''
     处理单个结果
     Args:
@@ -446,14 +420,12 @@ def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
         if 'VatInvoiceInfos' in api_res_json:
             VatInvoiceInfos = api_res_json['VatInvoiceInfos']
             dict_pandas = {}
-
             # add文件铭
             if file_name:
                 dict_pandas['文件名'] = Path(vat_img).name
 
             # 处理备注字段
             beizhu_value = ''
-
             # 处理所有发票
             for item in VatInvoiceInfos:
                 if item['Name'] == '备注':
@@ -467,30 +439,60 @@ def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
             dict_pandas['备注'] = beizhu_value
 
             # 处理Items部分
-            if 'Items' in api_res_json:
-                field_mapping = {
-                    'Name': '商品名称',
-                    'Spec': '规格型号',
-                    'Unit': '单位',
-                    'Quantity': '数量',
-                    'UnitPrice': '单价',
-                    'AmountWithoutTax': '金额'}
+            Items = api_res_json['Items']
+            if Items and len(Items) > 0:
+                for item in Items:
+                    for key, value in item.items():
+                        dict_pandas[key] = value
+                    # 将处理好的结果添加到结果列表
+                    res_df.append(dict_pandas)
 
-                Items = api_res_json['Items']
-                if Items and len(Items) > 0:
-                    dict_pandas['有商品明细'] = '是'
-
-                    # 将第一个商品信息添加到结果
-                    first_item = Items[0]
-                    for key, value in first_item.items():
-                        column_name = f"{field_mapping.get(key, key)}"
-                        dict_pandas[column_name] = value
-                else:
-                    dict_pandas['有商品明细'] = '否'
-            # 将处理好的结果添加到结果列表
-            res_df.append(dict_pandas)
-
-            logger.info(f"成功处理文件: {vat_img}")
+            logger.info(f"成功处理文件: {vat_img} 第 {pdf_page} 页")
 
     except Exception as e:
-        logger.error(f"处理文件 {vat_img} 时出错: {str(e)}")
+        logger.error(f"处理文件 {vat_img} 第 {pdf_page} 页 时出错: {str(e)}")
+
+
+##### 调用腾讯的接口 #####
+def RET2excel(img_path, id, key, output_path=r'./', output_excel='RET2excel.xlsx'):
+    potx.ocr2excel.RET2excel(img_path=img_path, id=id, key=key, output_path=output_path, output_excel=output_excel)
+
+
+##### 调用华为的接口 #####
+def household2excel(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    """
+    将户口图片转换为Excel格式。
+
+    本函数通过调用华为云的OCR服务，将户口图片中的信息识别并转换为Excel格式。
+    使用华为云账号的访问密钥（ak）和安全密钥（sk）进行身份验证，
+    指定图片文件的路径（img_path），并可选地指定输出的Excel文件名（output_excel）。
+
+    参数:
+    ak (str): 华为云账号的访问密钥。
+    sk (str): 华为云账号的安全密钥。
+    img_path (str): 户口图片文件的路径。
+    output_excel (str, 可选): 输出的Excel文件名。默认为'household2excel.xlsx'。
+
+    返回:
+    无直接返回值，结果为指定路径的Excel文件。
+    """
+    HuaweiOCR.household2excel(ak, sk, img_path, output_excel)
+
+
+def household2excel2(ak, sk, img_path, output_excel='household2excel.xlsx'):
+    """
+    将户口图像文件转换为Excel格式。
+
+    本函数通过调用华为OCR服务，将户口图像文件中的信息识别并提取出来，然后将这些信息保存到Excel文件中。
+    使用华为云的AK和SK进行身份验证，指定图像文件路径进行识别，可选地指定输出的Excel文件名。
+
+    参数:
+    - ak: 华为云的Access Key，用于身份验证。
+    - sk: 华为云的Secret Key，用于身份验证。
+    - img_path: 户口图像文件的路径，用于识别。
+    - output_excel: 输出的Excel文件名，默认为'household2excel.xlsx'。
+
+    返回:
+    无返回值，直接将识别结果保存在Excel文件中。
+    """
+    HuaweiOCR.household2excel2(ak, sk, img_path, output_excel)

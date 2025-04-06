@@ -1,11 +1,5 @@
 # -*- coding: UTF-8 -*-
-'''
-@Author  ：程序员晚枫，B站/抖音/微博/小红书/公众号
-@WeChat     ：CoderWanFeng
-@Blog      ：www.python-office.com
-@Date    ：2023/1/22 18:45 
-@Description     ：加载配置信息，core中类的父类
-'''
+
 import toml
 from loguru import logger
 
@@ -13,6 +7,10 @@ from poocr.lib.Const import DEFAULT_CONFIG_PATH_NAME, DEFAULT_CONFIG_NAME, TUTOR
 
 
 class poocrConfig():
+    """
+    通过配置文件来验证id和key，现在已经弃用。改为通过函数里传参：id，key
+    """
+
     def __init__(self):
         self.config_info = None
 
