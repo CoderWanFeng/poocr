@@ -27,7 +27,7 @@
   	<a href="https://mp.weixin.qq.com/s/yaSmFKO3RrBpyanW3nvRAQ">
 	<img src="https://img.shields.io/badge/QQ-163434413-orange"/>
   </a>
-    	<a href="https://mp.weixin.qq.com/s/NN2pX2bQPpczOeGF4ARNtw">
+    	<a href="http://www.python4office.cn/wechat-group/">
 	<img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1-%E4%BA%A4%E6%B5%81%E7%BE%A4-brightgreen"/>
   </a>
 
@@ -113,7 +113,7 @@ poocr欢迎任何人来添砖加瓦，贡献代码。
 > 目前项目的核心开发者：[@wzllby](https://gitcode.com/wzllby)、[@null](https://gitcode.com/wangkaka)、[程序员晚枫](https://gitcode.com/CoderWanFeng1)
 
 <p align="center" id='开源交流群-banner'>
-<a target="_blank" href='https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/python-office.jpg'>
-<img src="https://python-office-1300615378.cos.ap-chongqing.myqcloud.com/group/python-office-qr.jpg" width="100%"/>
+<a target="_blank" href='https://cos.python-office.com/group/free-group.jpg'>
+<img src="https://cos.python-office.com/group/python-office-qr.jpg" width="100%"/>
 </a> 
 </p>

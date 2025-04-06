@@ -7,6 +7,7 @@ from collections import OrderedDict
 from pathlib import Path
 
 import pandas as pd
+import potx
 from loguru import logger
 from pofile import get_files, mkdir
 from poprogress import simple_progress
@@ -14,8 +15,6 @@ from poprogress import simple_progress
 import poocr
 from poocr.api.ocr import VatInvoiceOCR, IDCardOCR, BizLicenseOCR, BankSlipOCR, RecognizeGeneralInvoice, TrainTicketOCR
 from poocr.core import HuaweiOCR
-
-import potx
 
 
 ##### 调用poocr的原生接口 #####
@@ -60,8 +59,8 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
                 # 处理api_res可能是列表的情况（多页pdf）
             if isinstance(api_res, list):
                 # 遍历每一页结果
-                for page_res in api_res:
-                    VatInvoiceOCR2(page_res, vat_img, file_name, trans, res_df)
+                for pdf_page, page_res in enumerate(api_res):
+                    VatInvoiceOCR2(page_res, vat_img, file_name, trans, res_df, pdf_page + 1)
             else:
                 VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df)
         except Exception as e:
@@ -73,7 +72,7 @@ def VatInvoiceOCR2Excel(input_path, output_path=r'./', output_excel='VatInvoiceO
         df = pd.DataFrame(res_df)
         df.to_excel(str(abs_output_excel), index=None, engine='openpyxl')
     else:
-        logger.warning(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
+        logger.error(f'该文件夹下，没有任何符合条件的发票图片/PDF文件')
 
 
 def BankSlipOCR2Excel(input_path, output_path=r'./', output_excel='BankSlipOCR2Excel.xlsx', img_url=None,
@@ -196,7 +195,7 @@ def TrainTicketOCR2Excel(input_path: str, output_excel: str = r'./TrainTicketOCR
     ticket_files = get_files(input_path)
     for ticket in simple_progress(ticket_files):
         try:
-            api_res = TrainTicketOCR(img_path=ticket, img_url=img_url, configPath=configPath,id=id,key=key)
+            api_res = TrainTicketOCR(img_path=ticket, img_url=img_url, configPath=configPath, id=id, key=key)
             api_res_json = json.loads(str(api_res))
             ticket_list.append(pd.DataFrame(api_res_json, index=[0]))
         except:
@@ -402,7 +401,7 @@ def RecognizeGeneralInvoiceOCR2Excel(input_path, output_path=None, output_excel=
     biz_def.to_excel(str(abs_output_excel), index=None)
 
 
-def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
+def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df, pdf_page=1):
     '''
     处理单个结果
     Args:
@@ -421,14 +420,12 @@ def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
         if 'VatInvoiceInfos' in api_res_json:
             VatInvoiceInfos = api_res_json['VatInvoiceInfos']
             dict_pandas = {}
-
             # add文件铭
             if file_name:
                 dict_pandas['文件名'] = Path(vat_img).name
 
             # 处理备注字段
             beizhu_value = ''
-
             # 处理所有发票
             for item in VatInvoiceInfos:
                 if item['Name'] == '备注':
@@ -442,33 +439,18 @@ def VatInvoiceOCR2(api_res, vat_img, file_name, trans, res_df):
             dict_pandas['备注'] = beizhu_value
 
             # 处理Items部分
-            if 'Items' in api_res_json:
-                field_mapping = {
-                    'Name': '商品名称',
-                    'Spec': '规格型号',
-                    'Unit': '单位',
-                    'Quantity': '数量',
-                    'UnitPrice': '单价',
-                    'AmountWithoutTax': '金额'}
+            Items = api_res_json['Items']
+            if Items and len(Items) > 0:
+                for item in Items:
+                    for key, value in item.items():
+                        dict_pandas[key] = value
+                    # 将处理好的结果添加到结果列表
+                    res_df.append(dict_pandas)
 
-                Items = api_res_json['Items']
-                if Items and len(Items) > 0:
-                    dict_pandas['有商品明细'] = '是'
-
-                    # 将第一个商品信息添加到结果
-                    first_item = Items[0]
-                    for key, value in first_item.items():
-                        column_name = f"{field_mapping.get(key, key)}"
-                        dict_pandas[column_name] = value
-                else:
-                    dict_pandas['有商品明细'] = '否'
-            # 将处理好的结果添加到结果列表
-            res_df.append(dict_pandas)
-
-            logger.info(f"成功处理文件: {vat_img}")
+            logger.info(f"成功处理文件: {vat_img} 第 {pdf_page} 页")
 
     except Exception as e:
-        logger.error(f"处理文件 {vat_img} 时出错: {str(e)}")
+        logger.error(f"处理文件 {vat_img} 第 {pdf_page} 页 时出错: {str(e)}")
 
 
 ##### 调用腾讯的接口 #####
